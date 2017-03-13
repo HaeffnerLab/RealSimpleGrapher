@@ -29,7 +29,7 @@ class Graph_PyQtGraph(QtGui.QWidget):
         self.should_stop = False
         self.name = config.name
         self.show_points = config.show_points
-    	self.grid_on = config.grid_on
+        self.grid_on = config.grid_on
 
         self.dataset_queue = Queue.Queue(config.max_datasets)
         
@@ -45,16 +45,16 @@ class Graph_PyQtGraph(QtGui.QWidget):
         self.pw = pg.PlotWidget()
         self.coords = QtGui.QLabel('')
         self.title = QtGui.QLabel(self.name)
-	frame = QtGui.QFrame()
-	splitter = QtGui.QSplitter()
+        frame = QtGui.QFrame()
+        splitter = QtGui.QSplitter()
         splitter.addWidget(self.tracelist)
-	hbox = QtGui.QHBoxLayout()
+        hbox = QtGui.QHBoxLayout()
         vbox = QtGui.QVBoxLayout()
         vbox.addWidget(self.title)
         vbox.addWidget(self.pw)
         vbox.addWidget(self.coords)
-	frame.setLayout(vbox)
-	splitter.addWidget(frame)
+        frame.setLayout(vbox)
+        splitter.addWidget(frame)
         hbox.addWidget(splitter)
         self.setLayout(hbox)
         #self.legend = self.pw.addLegend()
@@ -64,7 +64,7 @@ class Graph_PyQtGraph(QtGui.QWidget):
         self.img = pg.ImageItem()
         vb.addItem(self.img)
         self.pw.scene().sigMouseMoved.connect(self.mouseMoved)
-	self.pw.sigRangeChanged.connect(self.rangeChanged)
+        self.pw.sigRangeChanged.connect(self.rangeChanged)
 
     def update_figure(self):
         for ident, params in self.artists.iteritems():
@@ -90,8 +90,8 @@ class Graph_PyQtGraph(QtGui.QWidget):
             line = self.pw.plot([], [], symbol='o', symbolBrush = new_color, pen = new_color, name = ident)
         else:
             line = self.pw.plot([], [], pen = new_color, name = ident)
-	if self.grid_on:
-	   self.pw.showGrid(x=True, y=True)
+        if self.grid_on:
+            self.pw.showGrid(x=True, y=True)
         self.artists[ident] = artistParameters(line, dataset, index, True)
         self.tracelist.addTrace(ident)
 
@@ -133,10 +133,10 @@ class Graph_PyQtGraph(QtGui.QWidget):
                 pass
 
     def rangeChanged(self):
-	
-	lims = self.pw.viewRange()
-	self.pointsToKeep =  lims[0][1] - lims[0][0]
-	self.current_limits = [lims[0][0], lims[0][1]]
+
+        lims = self.pw.viewRange()
+        self.pointsToKeep =  lims[0][1] - lims[0][0]
+        self.current_limits = [lims[0][0], lims[0][1]]
 
     @inlineCallbacks
     def add_dataset(self, dataset):

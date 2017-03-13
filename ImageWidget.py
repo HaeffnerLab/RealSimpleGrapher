@@ -66,7 +66,18 @@ class imageWidget(QtGui.QWidget):
         self.tracelist.addTrace(ident)
 
     def remove_artist(self, ident):
-        pass
+        try:
+            artist = self.artists[ident].artist
+            self.pw.removeItem(artist)
+            #self.legend.removeItem(ident)
+            self.tracelist.removeTrace(ident)
+            self.artists[ident].shown = False
+            try:
+                del self.artists[ident]
+            except KeyError:
+                pass
+        except:
+            print "remove failed"
 
     def checkboxChanged(self):
         pass
