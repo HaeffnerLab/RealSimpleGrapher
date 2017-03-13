@@ -40,9 +40,8 @@ class RealSimpleGrapher(LabradServer):
     @inlineCallbacks
     def initServer(self):
         self.listeners = set()
-        print 'trying to make gui'
         self.gui = GraphWindow(reactor)
-        print 'done making gui'
+        self.gui.setWindowTitle('Real Simple Grapher')
         self.dv = yield self.client.data_vault
 
     def make_dataset(self, dataset_location):
