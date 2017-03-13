@@ -32,6 +32,9 @@ class GraphWindow(QtGui.QTabWidget):
                     g = ScrollingGraph(config, reactor)
                 elif config.isImages:
                     g = ImageGraph(config, reactor)
+                    self.graphDict[name] = g
+                    gli.append(g)
+                    continue
                 else:
                     g = Graph(config, reactor)
                 g.set_ylimits(config.ylim)

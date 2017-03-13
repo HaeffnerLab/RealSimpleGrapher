@@ -57,8 +57,9 @@ class RealSimpleGrapher(LabradServer):
             self.gui.graphDict['current'].add_dataset(ds)
         ds = self.make_dataset(dataset_location)
         self.gui.graphDict[graph].add_dataset(ds)
-	#tabindex = self.gui.indexOf(self.gui.tabDict[graph])
-	#self.gui.setCurrentIndex(tabindex)
+
+    def do_imshow(self, data, image_size, graph, name):
+        self.gui.graphDict[graph].update_image(data, image_size, name)
         
     @setting(1, 'Plot', dataset_location = ['(*s, s)', '(*s, i)'], graph = 's', send_to_current = 'b' ,returns = '')
     def plot(self, c,  dataset_location, graph, send_to_current = True):
@@ -71,8 +72,11 @@ class RealSimpleGrapher(LabradServer):
         if (graph != 'current') and (send_to_current == True):
             self.gui.graphDict['current'].set_xlimits([minim[minim.units], maxim[maxim.units]])
         self.gui.graphDict[graph].set_xlimits([minim[minim.units], maxim[maxim.units]])
-        #self.gui.graphDict[graph].set_xlimits([min(axis).value, max(axis).value])
         self.do_plot(dataset_location, graph, send_to_current)
+
+    @setting(3, 'Plot image', image='*i', image_size='*i', graph='s', name='s', returns='')
+    def plot_image(self, c, image, image_size, graph, name=''):
+        self.do_imshow(image, image_size, graph, name)
 
 if __name__ == '__main__':
     from labrad import util
