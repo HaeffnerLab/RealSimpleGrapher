@@ -17,6 +17,8 @@ class imageWidget(QtGui.QWidget):
         self.artists = {}
         self.should_stop = False
         self.name = config.name
+        self.image_list = []
+        self.image_index = -1
 
         self.initUI()
 
@@ -25,6 +27,8 @@ class imageWidget(QtGui.QWidget):
         self.title = QtGui.QLabel(self.name)
         self.next_button = QtGui.QPushButton('>')
         self.prev_button = QtGui.QPushButton('<')
+        self.next_button.clicked.connect(self.on_next)
+        self.prev_button.clicked.connect(self.on_prev)
         layout = QtGui.QGridLayout()
         layout.addWidget(self.title, 0,0)
         layout.addWidget(self.prev_button, 1,0)
@@ -33,9 +37,30 @@ class imageWidget(QtGui.QWidget):
         self.setLayout(layout)
 
     def update_image(self, data, image_size, name):
-        self.imv.setImage(data.reshape(image_size[0], image_size[1]))
+        image = data.reshape(image_size[0], image_size[1])
+        self.imv.setImage(image)
+        self.image_list.append([image, self.name + ' ' + name])
+        self.image_index += 1
+        if len(self.image_list) > 100:
+            del self.image_list[0]
         self.title.setText(self.name + ' ' + name)
 
+    def on_next(self):
+        try:
+            self.imv.setImage(self.image_list[self.image_index + 1][0])
+            self.title.setText(self.image_list[self.image_index + 1][1])
+            self.image_index += 1
+
+        except:
+            print 'Could not access index: ' + str(self.image_index + 1)
+
+    def on_prev(self):
+        try:
+            self.imv.setImage(self.image_list[self.image_index - 1][0])
+            self.title.setText(self.image_list[self.image_index - 1][1])
+            self.image_index -= 1
+        except:
+            print 'Could not access index: ' + str(self.image_index - 1)
 
 if __name__ == '__main__':
     app = QtGui.QApplication(sys.argv)
