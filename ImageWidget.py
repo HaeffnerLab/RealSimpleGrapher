@@ -21,15 +21,16 @@ class imageWidget(QtGui.QWidget):
         self.initUI()
 
     def initUI(self):
-        self.tracelist = TraceList(self)
         self.imv = pg.ImageView()
         self.title = QtGui.QLabel(self.name)
-        hbox = QtGui.QHBoxLayout()
-        vbox = QtGui.QVBoxLayout()
-        vbox.addWidget(self.title)
-        vbox.addWidget(self.imv)
-        hbox.addLayout(vbox)
-        self.setLayout(hbox)
+        self.next_button = QtGui.QPushButton('>')
+        self.prev_button = QtGui.QPushButton('<')
+        layout = QtGui.QGridLayout()
+        layout.addWidget(self.title, 0,0)
+        layout.addWidget(self.prev_button, 1,0)
+        layout.addWidget(self.next_button, 1,1)
+        layout.addWidget(self.imv, 2,0, 20,2)
+        self.setLayout(layout)
 
     def update_image(self, data, image_size, name):
         self.imv.setImage(data.reshape(image_size[0], image_size[1]))
