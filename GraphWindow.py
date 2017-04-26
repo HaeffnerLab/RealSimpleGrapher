@@ -6,6 +6,7 @@ from PyQt4 import QtGui
 import GUIConfig
 from GraphWidgetPyQtGraph import Graph_PyQtGraph as Graph
 from ScrollingGraphWidgetPyQtGraph import ScrollingGraph_PyQtGraph as ScrollingGraph
+from ImageWidget import imageWidget as ImageGraph
 from GridGraphWindow import GridGraphWindow
 
 class GraphWindow(QtGui.QTabWidget):
@@ -19,7 +20,7 @@ class GraphWindow(QtGui.QTabWidget):
         reactor = self.reactor
 
         self.graphDict = {}
-	self.tabDict = {}
+        self.tabDict = {}
 
         for gc in GUIConfig.tabs:
             gcli = gc.config_list
@@ -29,15 +30,20 @@ class GraphWindow(QtGui.QTabWidget):
                 max_ds = config.max_datasets
                 if config.isScrolling:
                     g = ScrollingGraph(config, reactor)
+                elif config.isImages:
+                    g = ImageGraph(config, reactor)
+                    self.graphDict[name] = g
+                    gli.append(g)
+                    continue
                 else:
                     g = Graph(config, reactor)
                 g.set_ylimits(config.ylim)
                 self.graphDict[name] = g
                 gli.append(g)
-	    widget = GridGraphWindow(gli, gc.row_list, gc.column_list, reactor)
-	    self.tabDict[name] = widget
+            widget = GridGraphWindow(gli, gc.row_list, gc.column_list, reactor)
+            self.tabDict[name] = widget
             self.addTab(widget, gc.tab)
-	    self.setMovable(True)
+            self.setMovable(True)
             
 
     def insert_tab(self, t):
