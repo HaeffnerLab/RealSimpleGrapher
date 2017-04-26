@@ -11,7 +11,7 @@ class traceListConfig():
 
 class graphConfig():
     def __init__(self, name, ylim=[0,1], isScrolling=False, max_datasets = 20,
-                 show_points = True, grid_on = False):
+                 show_points = True, grid_on = False, scatter_plot=False):
         self.name = name
         self.ylim = ylim
         self.isScrolling = isScrolling
@@ -19,6 +19,7 @@ class graphConfig():
         self.graphs = 1 # just a single graph
         self.show_points = show_points
         self.grid_on = grid_on
+        self.scatter_plot = scatter_plot
 
 class gridGraphConfig():
     def __init__(self, tab, config_list):
