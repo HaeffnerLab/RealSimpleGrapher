@@ -30,9 +30,10 @@ class Graph_PyQtGraph(QtGui.QWidget):
         self.name = config.name
         self.show_points = config.show_points
         self.grid_on = config.grid_on
+        self.scatter_plot = config.scatter_plot
 
         self.dataset_queue = Queue.Queue(config.max_datasets)
-        
+
         self.live_update_loop = LoopingCall(self.update_figure)
         self.live_update_loop.start(0)
 
@@ -87,7 +88,8 @@ class Graph_PyQtGraph(QtGui.QWidget):
         '''
         new_color = self.colorChooser.next()
         if self.show_points and not no_points:
-            line = self.pw.plot([], [], symbol='o', symbolBrush = new_color, pen = new_color, name = ident)
+            line = self.pw.plot([], [], symbol='o', symbolBrush=new_color,
+                                pen=new_color, name=ident, connect=self.scatter_plot)
         else:
             line = self.pw.plot([], [], pen = new_color, name = ident)
         if self.grid_on:
