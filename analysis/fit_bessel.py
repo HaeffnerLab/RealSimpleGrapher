@@ -48,8 +48,7 @@ class Bessel(Model):
         return (max(x) - min(x))/6.0
     
     def guess_offset(self, x, y):
-        min_index = np.min(y)
-        return y[min_index]
+        return np.min(y)
 
     def guess_modDepth(self, x, y):
         return 0.2
