@@ -20,6 +20,7 @@ class graphConfig():
         self.show_points = show_points
         self.grid_on = grid_on
         self.scatter_plot = scatter_plot
+        self.isImages = False
 
 class gridGraphConfig():
     def __init__(self, tab, config_list):
