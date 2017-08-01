@@ -31,10 +31,11 @@ class Lorentzian(Model):
         return x[max_index]
 
     def guess_scale(self, x, y):
-        return 1.0
+	area = (max(x) - min(x))*(max(y) - min(y))
+        return area
     
     def guess_fwhm(self, x, y):
         return (max(x) - min(x))/6.0
     
     def guess_offset(self, x, y):
-        return 0.
+        return np.min(y)
