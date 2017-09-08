@@ -62,6 +62,7 @@ class TraceList(QtGui.QListWidget):
             cyanAction = selectColorMenu.addAction("Cyan")
             magentaAction = selectColorMenu.addAction("Magenta")
             whiteAction = selectColorMenu.addAction("White")
+            colorActionDict = {redAction:"r", greenAction:"g", yellowAction:"y", cyanAction:"c", magentaAction:"m", whiteAction:"w"}
 
             action = menu.exec_(self.mapToGlobal(pos))
             
@@ -88,46 +89,9 @@ class TraceList(QtGui.QListWidget):
                 self.windows.append(fw)
                 fw.show()
 
-            if action == redAction:
-                new_color = "r"
+            if action in colorActionDict.keys():
+                new_color = colorActionDict[action]
                 if self.parent.show_points:
                     self.parent.artists[ident].artist.setData(pen = new_color, symbolBrush = new_color)
                 else:
                     self.parent.artists[ident].artist.setData(pen = new_color)
-
-            if action == greenAction:
-                new_color = "g"
-                if self.parent.show_points:
-                    self.parent.artists[ident].artist.setData(pen = new_color, symbolBrush = new_color)
-                else:
-                    self.parent.artists[ident].artist.setData(pen = new_color)
-
-            if action == yellowAction:
-                new_color = "y"
-                if self.parent.show_points:
-                    self.parent.artists[ident].artist.setData(pen = new_color, symbolBrush = new_color)
-                else:
-                    self.parent.artists[ident].artist.setData(pen = new_color)
-
-            if action == cyanAction:
-                new_color = "c"
-                if self.parent.show_points:
-                    self.parent.artists[ident].artist.setData(pen = new_color, symbolBrush = new_color)
-                else:
-                    self.parent.artists[ident].artist.setData(pen = new_color)
-
-            if action == magentaAction:
-                new_color = "m"
-                if self.parent.show_points:
-                    self.parent.artists[ident].artist.setData(pen = new_color, symbolBrush = new_color)
-                else:
-                    self.parent.artists[ident].artist.setData(pen = new_color)
-
-            if action == whiteAction:
-                new_color = "w"
-                if self.parent.show_points:
-                    self.parent.artists[ident].artist.setData(pen = new_color, symbolBrush = new_color)
-                else:
-                    self.parent.artists[ident].artist.setData(pen = new_color)
-                
-               
