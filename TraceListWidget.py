@@ -12,7 +12,7 @@ class TraceList(QtGui.QListWidget):
         self.windows = []
         self.config = traceListConfig()
         self.setStyleSheet("background-color:%s;" % self.config.background_color)
-	self.name = 'pmt'
+        self.name = 'pmt'
         self.initUI()
 
     def initUI(self):
@@ -42,19 +42,27 @@ class TraceList(QtGui.QListWidget):
         menu = QtGui.QMenu()
         item = self.itemAt(pos)
         if (item == None): 
-	    dataaddAction = menu.addAction('Add Data Set')
-	    
-	    action = menu.exec_(self.mapToGlobal(pos))
-	    if action == dataaddAction:
-		dvlist = DataVaultList(self.parent.name)
-		self.windows.append(dvlist)
-		dvlist.show()
+            dataaddAction = menu.addAction('Add Data Set')
+
+            action = menu.exec_(self.mapToGlobal(pos))
+            if action == dataaddAction:
+                dvlist = DataVaultList(self.parent.name)
+                self.windows.append(dvlist)
+                dvlist.show()
 
         else:
-	    ident = str(item.text())
+            ident = str(item.text())
             parametersAction = menu.addAction('Parameters')
             togglecolorsAction = menu.addAction('Toggle colors')
             fitAction = menu.addAction('Fit')
+            selectColorMenu = menu.addMenu("Select color")
+            redAction = selectColorMenu.addAction("Red")
+            greenAction = selectColorMenu.addAction("Green")
+            yellowAction = selectColorMenu.addAction("Yellow")
+            cyanAction = selectColorMenu.addAction("Cyan")
+            magentaAction = selectColorMenu.addAction("Magenta")
+            whiteAction = selectColorMenu.addAction("White")
+            colorActionDict = {redAction:"r", greenAction:"g", yellowAction:"y", cyanAction:"c", magentaAction:"m", whiteAction:"w"}
 
             action = menu.exec_(self.mapToGlobal(pos))
             
@@ -80,5 +88,10 @@ class TraceList(QtGui.QListWidget):
                 fw = FitWindow(dataset, index, self)
                 self.windows.append(fw)
                 fw.show()
-                
-               
+
+            if action in colorActionDict.keys():
+                new_color = colorActionDict[action]
+                if self.parent.show_points:
+                    self.parent.artists[ident].artist.setData(pen = new_color, symbolBrush = new_color)
+                else:
+                    self.parent.artists[ident].artist.setData(pen = new_color)
