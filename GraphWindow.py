@@ -37,6 +37,12 @@ class GraphWindow(QtGui.QTabWidget):
                     self.graphDict[name] = g
                     gli.append(g)
                     continue
+                elif config.isHist:
+                    g = Hist(config, reactor, self.cxn)
+                    print name
+                    self.graphDict[name] = g
+                    gli.append(g)
+                    continue
                 else:
                     g = Graph(config, reactor)
                 g.set_ylimits(config.ylim)
