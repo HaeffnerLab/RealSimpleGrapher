@@ -5,13 +5,15 @@ import sys
 from PyQt4 import QtGui
 import GUIConfig
 from GraphWidgetPyQtGraph import Graph_PyQtGraph as Graph
+from HistWidgetPyQtGraph import Hist_PyQtGraph as Hist
 from ScrollingGraphWidgetPyQtGraph import ScrollingGraph_PyQtGraph as ScrollingGraph
 from ImageWidget import imageWidget as ImageGraph
 from GridGraphWindow import GridGraphWindow
 
 class GraphWindow(QtGui.QTabWidget):
-    def __init__(self, reactor, parent=None):
+    def __init__(self, reactor, cxn = None, parent=None):
         super(GraphWindow, self).__init__(parent)
+        self.cxn = cxn
         self.reactor = reactor        
         self.initUI()
         self.show()
