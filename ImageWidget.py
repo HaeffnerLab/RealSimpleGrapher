@@ -18,7 +18,7 @@ class imageWidget(QtGui.QWidget):
         self.should_stop = False
         self.name = config.name
         self.image_list = []
-        self.image_index = -1
+        self.image_index = 0
 
         self.initUI()
 
@@ -47,29 +47,38 @@ class imageWidget(QtGui.QWidget):
 
     def update_image(self, data, image_size, name):
         image = data.reshape(image_size[0], image_size[1])
-        self.imv.setImage(image, autoRange=False, autoLevels=False, autoHistogramRange=False)
+        if len(self.image_list) == 0:
+            self.imv.setImage(image)
+        else:
+            self.imv.setImage(image, autoRange=False, autoLevels=False, autoHistogramRange=False)
         self.image_list.append([image, self.name + ' ' + name])
-        self.image_index += 1
+        self.image_index = len(self.image_list) - 1
         if len(self.image_list) > 100:
             del self.image_list[0]
         self.title.setText(self.name + ' ' + name)
 
     def on_next(self):
         try:
-            self.imv.setImage(self.image_list[self.image_index + 1][0], autoRange=False, autoLevels=False, autoHistogramRange=False)
-            self.title.setText(self.image_list[self.image_index + 1][1])
-            self.image_index += 1
+            if self.image_index < len(self.image_list) -1:
+                self.image_index += 1
+                self.imv.setImage(self.image_list[self.image_index][0], autoRange=False, autoLevels=False, autoHistogramRange=False)
+                self.title.setText(self.image_list[self.image_index][1])
+            else:
+                pass
 
         except:
-            print 'Could not access index: ' + str(self.image_index + 1)
+            print 'Could not access index: ' + str(self.image_index)
 
     def on_prev(self):
         try:
-            self.imv.setImage(self.image_list[self.image_index - 1][0], autoRange=False, autoLevels=False, autoHistogramRange=False)
-            self.title.setText(self.image_list[self.image_index - 1][1])
-            self.image_index -= 1
+            if self.image_index > 0:
+                self.image_index -= 1
+                self.imv.setImage(self.image_list[self.image_index][0], autoRange=False, autoLevels=False, autoHistogramRange=False)
+                self.title.setText(self.image_list[self.image_index][1])
+            else:
+                pass
         except:
-            print 'Could not access index: ' + str(self.image_index - 1)
+            print 'Could not access index: ' + str(self.image_index)
 
     def mouse_clicked(self, event):
         '''
