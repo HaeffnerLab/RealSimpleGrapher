@@ -89,7 +89,7 @@ class Graph_PyQtGraph(QtGui.QWidget):
         new_color = self.colorChooser.next()
         if self.show_points and not no_points:
             line = self.pw.plot([], [], symbol='o', symbolBrush=new_color,
-                                pen=new_color, name=ident, connect=self.scatter_plot)
+                                name=ident, pen = new_color, connect=self.scatter_plot)
         else:
             line = self.pw.plot([], [], pen = new_color, name = ident)
         if self.grid_on:

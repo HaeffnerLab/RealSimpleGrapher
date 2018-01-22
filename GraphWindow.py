@@ -39,7 +39,6 @@ class GraphWindow(QtGui.QTabWidget):
                     continue
                 elif config.isHist:
                     g = Hist(config, reactor, self.cxn)
-                    print name
                     self.graphDict[name] = g
                     gli.append(g)
                     continue
