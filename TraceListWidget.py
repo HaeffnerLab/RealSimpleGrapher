@@ -3,6 +3,7 @@ from PyQt4 import QtCore
 from ParameterListWidget import ParameterList
 from DataVaultListWidget import DataVaultList
 from FitWindowWidget import FitWindow
+from PredictSpectrumWidget import PredictSpectrum
 from GUIConfig import traceListConfig
 
 class TraceList(QtGui.QListWidget):
@@ -43,12 +44,20 @@ class TraceList(QtGui.QListWidget):
         item = self.itemAt(pos)
         if (item == None): 
             dataaddAction = menu.addAction('Add Data Set')
+            spectrumaddAction = menu.addAction('Add Predicted Spectrum')
 
             action = menu.exec_(self.mapToGlobal(pos))
             if action == dataaddAction:
                 dvlist = DataVaultList(self.parent.name)
                 self.windows.append(dvlist)
                 dvlist.show()
+
+            if action == spectrumaddAction:
+                ps = PredictSpectrum(self)
+                self.windows.append(ps)
+                ps.show()
+
+
 
         else:
             ident = str(item.text())
