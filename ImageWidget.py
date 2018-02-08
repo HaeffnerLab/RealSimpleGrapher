@@ -18,12 +18,21 @@ class imageWidget(QtGui.QWidget):
         self.should_stop = False
         self.name = config.name
         self.image_list = []
-        self.image_index = -1
+        self.image_index = 0
 
         self.initUI()
 
     def initUI(self):
-        self.imv = pg.ImageView()
+        self.plt = plt = pg.PlotItem()
+        self.imv = pg.ImageView(view = self.plt)
+        plt.showAxis('top')
+        plt.hideAxis('bottom')
+        plt.setAspectLocked(True)
+        self.vLine = pg.InfiniteLine(angle=90, movable=False)
+        self.hLine = pg.InfiniteLine(angle=0, movable=False)
+        plt.addItem(self.vLine, ignoreBounds=True)
+        plt.addItem(self.hLine, ignoreBounds=True)
+        self.plt.scene().sigMouseClicked.connect(self.mouse_clicked)
         self.title = QtGui.QLabel(self.name)
         self.next_button = QtGui.QPushButton('>')
         self.prev_button = QtGui.QPushButton('<')
@@ -38,29 +47,49 @@ class imageWidget(QtGui.QWidget):
 
     def update_image(self, data, image_size, name):
         image = data.reshape(image_size[0], image_size[1])
-        self.imv.setImage(image)
+        if len(self.image_list) == 0:
+            self.imv.setImage(image)
+        else:
+            self.imv.setImage(image, autoRange=False, autoLevels=False, autoHistogramRange=False)
         self.image_list.append([image, self.name + ' ' + name])
-        self.image_index += 1
+        self.image_index = len(self.image_list) - 1
         if len(self.image_list) > 100:
             del self.image_list[0]
         self.title.setText(self.name + ' ' + name)
 
     def on_next(self):
         try:
-            self.imv.setImage(self.image_list[self.image_index + 1][0])
-            self.title.setText(self.image_list[self.image_index + 1][1])
-            self.image_index += 1
+            if self.image_index < len(self.image_list) -1:
+                self.image_index += 1
+                self.imv.setImage(self.image_list[self.image_index][0], autoRange=False, autoLevels=False, autoHistogramRange=False)
+                self.title.setText(self.image_list[self.image_index][1])
+            else:
+                pass
 
         except:
-            print 'Could not access index: ' + str(self.image_index + 1)
+            print 'Could not access index: ' + str(self.image_index)
 
     def on_prev(self):
         try:
-            self.imv.setImage(self.image_list[self.image_index - 1][0])
-            self.title.setText(self.image_list[self.image_index - 1][1])
-            self.image_index -= 1
+            if self.image_index > 0:
+                self.image_index -= 1
+                self.imv.setImage(self.image_list[self.image_index][0], autoRange=False, autoLevels=False, autoHistogramRange=False)
+                self.title.setText(self.image_list[self.image_index][1])
+            else:
+                pass
         except:
-            print 'Could not access index: ' + str(self.image_index - 1)
+            print 'Could not access index: ' + str(self.image_index)
+
+    def mouse_clicked(self, event):
+        '''
+        draws the cross at the position of a double click
+        '''
+        pos = event.pos()
+        if self.plt.sceneBoundingRect().contains(pos) and event.double():
+            #only on double clicks within bounds
+            mousePoint = self.plt.vb.mapToView(pos)
+            self.vLine.setPos(mousePoint.x())
+            self.hLine.setPos(mousePoint.y())
 
 if __name__ == '__main__':
     app = QtGui.QApplication(sys.argv)
