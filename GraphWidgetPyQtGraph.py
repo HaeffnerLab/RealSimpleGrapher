@@ -22,12 +22,18 @@ class artistParameters():
                              # update count
 
 class Graph_PyQtGraph(QtGui.QWidget):
-    def __init__(self, config, reactor, parent=None):
+    def __init__(self, config, reactor, cxn = None, parent=None):
         super(Graph_PyQtGraph, self).__init__(parent)
+        from labrad.units import WithUnit as U
+        self.U = U
+        self.cxn = cxn
+        self.pv = self.cxn.parametervault
         self.reactor = reactor
         self.artists = {}
         self.should_stop = False
         self.name = config.name
+        self.vline_name = config.vline
+        self.vline_param = config.line_param
         self.show_points = config.show_points
         self.grid_on = config.grid_on
         self.scatter_plot = config.scatter_plot
@@ -44,6 +50,12 @@ class Graph_PyQtGraph(QtGui.QWidget):
     def initUI(self):
         self.tracelist = TraceList(self)
         self.pw = pg.PlotWidget()
+        if self.vline_name:
+            self.inf = pg.InfiniteLine(movable=True, angle=90, label=self.vline_name + '{value:0.0f}',
+                               labelOpts={'position': 0.9, 'color': (200, 200, 100), 'fill': (200, 200, 200, 50),
+                                          'movable': True})
+            self.inf.setPen(width=5.0)
+
         self.coords = QtGui.QLabel('')
         self.title = QtGui.QLabel(self.name)
         frame = QtGui.QFrame()
@@ -64,6 +76,11 @@ class Graph_PyQtGraph(QtGui.QWidget):
         vb = self.pw.plotItem.vb
         self.img = pg.ImageItem()
         vb.addItem(self.img)
+
+        if self.vline_name:
+            vb.addItem(self.inf)
+            self.inf.sigPositionChangeFinished.connect(self.vline_changed)
+
         self.pw.scene().sigMouseMoved.connect(self.mouseMoved)
         self.pw.sigRangeChanged.connect(self.rangeChanged)
 
@@ -170,6 +187,14 @@ class Graph_PyQtGraph(QtGui.QWidget):
         pnt = self.img.mapFromScene(pos)
         string = '(' + str(pnt.x()) + ' , ' + str(pnt.y()) + ')'
         self.coords.setText(string)
+
+    @inlineCallbacks
+    def vline_changed(self, sig):
+        val = self.inf.value()
+        param = yield self.pv.get_parameter(self.vline_param[0], self.vline_param[1])
+        units = param.units
+        val = self.U(val, units)
+        yield self.pv.set_parameter(self.vline_param[0], self.vline_param[1], val)
 
 if __name__ == '__main__':
     app = QtGui.QApplication(sys.argv)

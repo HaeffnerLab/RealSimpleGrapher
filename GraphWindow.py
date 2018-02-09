@@ -31,7 +31,7 @@ class GraphWindow(QtGui.QTabWidget):
                 name = config.name
                 max_ds = config.max_datasets
                 if config.isScrolling:
-                    g = ScrollingGraph(config, reactor)
+                    g = ScrollingGraph(config, reactor, self.cxn)
                 elif config.isImages:
                     g = ImageGraph(config, reactor)
                     self.graphDict[name] = g
@@ -43,7 +43,7 @@ class GraphWindow(QtGui.QTabWidget):
                     gli.append(g)
                     continue
                 else:
-                    g = Graph(config, reactor)
+                    g = Graph(config, reactor, self.cxn)
                 g.set_ylimits(config.ylim)
                 self.graphDict[name] = g
                 gli.append(g)
