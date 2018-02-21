@@ -46,7 +46,7 @@ class Dataset(QtCore.QObject):
             parameterValues.append( (parameter, parameterValue) )
         returnValue(parameterValues)
 
-    def updateData(self, x, y):
+    def updateData(self,x,y):
         self.updateCounter += 1
         self.getData()
 

@@ -5,13 +5,15 @@ import sys
 from PyQt4 import QtGui
 import GUIConfig
 from GraphWidgetPyQtGraph import Graph_PyQtGraph as Graph
+from HistWidgetPyQtGraph import Hist_PyQtGraph as Hist
 from ScrollingGraphWidgetPyQtGraph import ScrollingGraph_PyQtGraph as ScrollingGraph
 from ImageWidget import imageWidget as ImageGraph
 from GridGraphWindow import GridGraphWindow
 
 class GraphWindow(QtGui.QTabWidget):
-    def __init__(self, reactor, parent=None):
+    def __init__(self, reactor, cxn = None, parent=None):
         super(GraphWindow, self).__init__(parent)
+        self.cxn = cxn
         self.reactor = reactor        
         self.initUI()
         self.show()
@@ -29,14 +31,19 @@ class GraphWindow(QtGui.QTabWidget):
                 name = config.name
                 max_ds = config.max_datasets
                 if config.isScrolling:
-                    g = ScrollingGraph(config, reactor)
+                    g = ScrollingGraph(config, reactor, self.cxn)
                 elif config.isImages:
                     g = ImageGraph(config, reactor)
                     self.graphDict[name] = g
                     gli.append(g)
                     continue
+                elif config.isHist:
+                    g = Hist(config, reactor, self.cxn)
+                    self.graphDict[name] = g
+                    gli.append(g)
+                    continue
                 else:
-                    g = Graph(config, reactor)
+                    g = Graph(config, reactor, self.cxn)
                 g.set_ylimits(config.ylim)
                 self.graphDict[name] = g
                 gli.append(g)

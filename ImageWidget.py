@@ -10,7 +10,7 @@ import Queue
 
 class imageWidget(QtGui.QWidget):
 
-    def __init__(self, config, reactor, parent=None):
+    def __init__(self, config, reactor, parent=None, cxn=None):
         super(imageWidget, self).__init__(parent)
 
         self.reactor = reactor

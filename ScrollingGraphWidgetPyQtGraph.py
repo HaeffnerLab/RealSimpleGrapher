@@ -2,7 +2,7 @@ from GraphWidgetPyQtGraph import Graph_PyQtGraph as Graph
 from PyQt4 import QtGui, QtCore
 
 class ScrollingGraph_PyQtGraph(Graph):
-    def __init__(self, name, reactor, parent = None, ylim=[0,1]):
+    def __init__(self, name, reactor, parent = None, ylim=[0,1], cxn=None):
         super(ScrollingGraph_PyQtGraph, self).__init__(name, reactor, parent)
         self.set_xlimits([0, 100])
         self.pointsToKeep = 100
