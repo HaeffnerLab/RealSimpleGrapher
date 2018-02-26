@@ -6,8 +6,9 @@ pg.setConfigOption('background', 'k')
 pg.setConfigOption('foreground', 'y')
 
 class traceListConfig():
-    def __init__(self, background_color = 'white'):
+    def __init__(self, background_color = 'white', use_trace_color = False):
         self.background_color = background_color
+        self.use_trace_color = use_trace_color
 
 class graphConfig():
     def __init__(self, name, ylim=[0,1], isScrolling=False, max_datasets = 20,
