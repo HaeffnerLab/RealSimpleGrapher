@@ -33,7 +33,9 @@ class Graph_PyQtGraph(QtGui.QWidget):
         self.should_stop = False
         self.name = config.name
         self.vline_name = config.vline
-        self.vline_param = config.line_param
+        self.vline_param = config.vline_param
+        self.hline_name = config.hline
+        self.hline_param = config.hline_param
         self.show_points = config.show_points
         self.grid_on = config.grid_on
         self.scatter_plot = config.scatter_plot
@@ -52,6 +54,13 @@ class Graph_PyQtGraph(QtGui.QWidget):
         self.pw = pg.PlotWidget()
         if self.vline_name:
             self.inf = pg.InfiniteLine(movable=True, angle=90, label=self.vline_name + '{value:0.0f}',
+                               labelOpts={'position': 0.9, 'color': (200, 200, 100), 'fill': (200, 200, 200, 50),
+                                          'movable': True})
+            self.inf.setPen(width=5.0)
+
+        if self.hline_name:
+            print self.hline_name
+            self.inf = pg.InfiniteLine(movable=True, angle=0, label=self.hline_name + '{value:0.0f}',
                                labelOpts={'position': 0.9, 'color': (200, 200, 100), 'fill': (200, 200, 200, 50),
                                           'movable': True})
             self.inf.setPen(width=5.0)
@@ -80,6 +89,10 @@ class Graph_PyQtGraph(QtGui.QWidget):
         if self.vline_name:
             vb.addItem(self.inf)
             self.inf.sigPositionChangeFinished.connect(self.vline_changed)
+
+        if self.hline_name:
+            vb.addItem(self.inf)
+            self.inf.sigPositionChangeFinished.connect(self.hline_changed)
 
         self.pw.scene().sigMouseMoved.connect(self.mouseMoved)
         self.pw.sigRangeChanged.connect(self.rangeChanged)
@@ -195,6 +208,14 @@ class Graph_PyQtGraph(QtGui.QWidget):
         units = param.units
         val = self.U(val, units)
         yield self.pv.set_parameter(self.vline_param[0], self.vline_param[1], val)
+
+    @inlineCallbacks
+    def hline_changed(self, sig):
+        val = self.inf.value()
+        param = yield self.pv.get_parameter(self.hline_param[0], self.hline_param[1])
+        units = param.units
+        val = self.U(val, units)
+        yield self.pv.set_parameter(self.hline_param[0], self.hline_param[1], val)
 
 if __name__ == '__main__':
     app = QtGui.QApplication(sys.argv)

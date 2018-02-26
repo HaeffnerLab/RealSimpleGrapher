@@ -27,7 +27,7 @@ class Hist_PyQtGraph(QtGui.QWidget):
         self.should_stop = False
         self.name = config.name
         self.vline_name = config.vline
-        self.vline_param = config.line_param
+        self.vline_param = config.vline_param
 
         self.dataset_queue = Queue.Queue(config.max_datasets)
 
