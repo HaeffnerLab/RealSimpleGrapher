@@ -97,7 +97,7 @@ class Hist_PyQtGraph(QtGui.QWidget):
         hist = pg.PlotCurveItem([0,1],[1], stepMode=True, fillLevel=0, brush=new_color, pen=None)
         self.artists[ident] = artistParameters(hist, dataset, index, True)
         self.pw.addItem(hist)
-        self.tracelist.addTrace(ident)
+        self.tracelist.addTrace(ident, new_color)
 
     def remove_artist(self, ident):
         try:
