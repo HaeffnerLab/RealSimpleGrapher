@@ -30,7 +30,7 @@ class TraceList(QtGui.QListWidget):
 
 
     def addTrace(self, ident, color):
-        name = self.getItemName(ident, color)
+        name = ident
         item = QtGui.QListWidgetItem(name)
         item.setStatusTip(ident)
 
@@ -38,8 +38,7 @@ class TraceList(QtGui.QListWidget):
             foreground_color = self.getItemColor(color)
             item.setForeground(foreground_color)
         else:
-            #item.setForeground(QtGui.QColor(255, 255, 255))
-            item.setForeground(self.getItemColor(color))
+            item.setForeground(QtGui.QColor(255, 255, 255))
         item.setBackground(QtGui.QColor(0, 0, 0))
 
         item.setCheckState(QtCore.Qt.Checked)
@@ -55,18 +54,11 @@ class TraceList(QtGui.QListWidget):
     def changeTraceListColor(self, ident, new_color):
         item = self.trace_dict[ident]
         item.setForeground(self.getItemColor(new_color))
-        name = self.getItemName(ident, new_color)
-        #item.setText(name)
 
     def getItemColor(self, color):
         color_dict = {"r" : QtCore.Qt.red, "g" : QtCore.Qt.green, "y" : QtCore.Qt.yellow,
                       "c" : QtCore.Qt.cyan, "m" : QtCore.Qt.magenta, "w" : QtCore.Qt.white}
         return color_dict[color]
-
-    def getItemName(self, ident, color):
-        color_name_dict = {"r" : "red", "g" : "green", "y" : "yellow",
-                           "c" : "cyan", "m" : "magenta", "w" : "white"}
-        return ident
 
     def popupMenu(self, pos):
         menu = QtGui.QMenu()
