@@ -30,9 +30,7 @@ class TraceList(QtGui.QListWidget):
 
 
     def addTrace(self, ident, color):
-        name = ident
-        item = QtGui.QListWidgetItem(name)
-        item.setStatusTip(ident)
+        item = QtGui.QListWidgetItem(ident)
 
         if self.use_trace_color:
             foreground_color = self.getItemColor(color)
@@ -81,7 +79,7 @@ class TraceList(QtGui.QListWidget):
 
 
         else:
-            ident = str(item.statusTip())
+            ident = str(item.text())
             parametersAction = menu.addAction('Parameters')
             togglecolorsAction = menu.addAction('Toggle colors')
             fitAction = menu.addAction('Fit')
@@ -124,6 +122,7 @@ class TraceList(QtGui.QListWidget):
 
             if action in colorActionDict.keys():
                 new_color = colorActionDict[action]
+                self.parent.artists[ident].artist.setPen(new_color)
                 if self.parent.show_points:
                     self.parent.artists[ident].artist.setData(pen = new_color, symbolBrush = new_color)
                     self.changeTraceListColor(ident, new_color)
