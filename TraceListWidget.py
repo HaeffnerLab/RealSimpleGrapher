@@ -33,7 +33,7 @@ class TraceList(QtGui.QListWidget):
         item = QtGui.QListWidgetItem(ident)
 
         if self.use_trace_color:
-            foreground_color = self.getItemColor(color)
+            foreground_color = self.parent.getItemColor(color)
             item.setForeground(foreground_color)
         else:
             item.setForeground(QtGui.QColor(255, 255, 255))
@@ -51,12 +51,7 @@ class TraceList(QtGui.QListWidget):
 
     def changeTraceListColor(self, ident, new_color):
         item = self.trace_dict[ident]
-        item.setForeground(self.getItemColor(new_color))
-
-    def getItemColor(self, color):
-        color_dict = {"r" : QtCore.Qt.red, "g" : QtCore.Qt.green, "y" : QtCore.Qt.yellow,
-                      "c" : QtCore.Qt.cyan, "m" : QtCore.Qt.magenta, "w" : QtCore.Qt.white}
-        return color_dict[color]
+        item.setForeground(self.parent.getItemColor(new_color))
 
     def popupMenu(self, pos):
         menu = QtGui.QMenu()

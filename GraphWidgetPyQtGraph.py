@@ -97,6 +97,11 @@ class Graph_PyQtGraph(QtGui.QWidget):
         self.pw.scene().sigMouseMoved.connect(self.mouseMoved)
         self.pw.sigRangeChanged.connect(self.rangeChanged)
 
+    def getItemColor(self, color):
+        color_dict = {"r" : QtGui.QColor(QtCore.Qt.red).lighter(130), "g" : QtGui.QColor(QtCore.Qt.green), "y" : QtGui.QColor(QtCore.Qt.yellow),
+                      "c" : QtGui.QColor(QtCore.Qt.cyan), "m" : QtGui.QColor(QtCore.Qt.magenta).lighter(120), "w" : QtGui.QColor(QtCore.Qt.white)}
+        return color_dict[color]
+
     def update_figure(self):
         for ident, params in self.artists.iteritems():
             if params.shown:
@@ -118,10 +123,10 @@ class Graph_PyQtGraph(QtGui.QWidget):
         '''
         new_color = self.colorChooser.next()
         if self.show_points and not no_points:
-            line = self.pw.plot([], [], symbol='o', symbolBrush=new_color,
-                                name=ident, pen = new_color, connect=self.scatter_plot)
+            line = self.pw.plot([], [], symbol='o', symbolBrush=self.getItemColor(new_color),
+                                name=ident, pen = self.getItemColor(new_color), connect=self.scatter_plot)
         else:
-            line = self.pw.plot([], [], pen = new_color, name = ident)
+            line = self.pw.plot([], [], pen = self.getItemColor(new_color), name = ident)
         if self.grid_on:
             self.pw.showGrid(x=True, y=True)
         self.artists[ident] = artistParameters(line, dataset, index, True)
