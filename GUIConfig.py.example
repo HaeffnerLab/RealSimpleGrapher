@@ -6,12 +6,14 @@ pg.setConfigOption('background', 'k')
 pg.setConfigOption('foreground', 'y')
 
 class traceListConfig():
-    def __init__(self, background_color = 'white'):
+    def __init__(self, background_color = 'white', use_trace_color = False):
         self.background_color = background_color
+        self.use_trace_color = use_trace_color
 
 class graphConfig():
     def __init__(self, name, ylim=[0,1], isScrolling=False, max_datasets = 20,
-                 show_points = True, grid_on = False, scatter_plot='all'):
+                 show_points = True, grid_on = False, scatter_plot='all', isImages=False,
+                 isHist=False, line_param=None, vline=None, vline_param=None, hline=None, hline_param=None):
         self.name = name
         self.ylim = ylim
         self.isScrolling = isScrolling
@@ -20,7 +22,13 @@ class graphConfig():
         self.show_points = show_points
         self.grid_on = grid_on
         self.scatter_plot = scatter_plot
-        self.isImages = False
+        self.isImages = isImages
+        self.isHist = isHist
+        self.line_param = line_param
+        self.vline = vline
+        self.vline_param = vline_param
+        self.hline = hline
+        self.hline_param = hline_param
 
 class gridGraphConfig():
     def __init__(self, tab, config_list):

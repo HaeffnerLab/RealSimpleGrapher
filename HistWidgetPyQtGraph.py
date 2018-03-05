@@ -2,10 +2,11 @@ import sys
 from PyQt4 import QtGui, QtCore
 import pyqtgraph as pg
 from TraceListWidget import TraceList
-from twisted.internet.defer import inlineCallbacks
+from twisted.internet.defer import inlineCallbacks, returnValue
 from twisted.internet.task import LoopingCall
 import itertools
 import Queue
+
 
 class artistParameters():
     def __init__(self, artist, dataset, index, shown):
@@ -13,12 +14,13 @@ class artistParameters():
         self.dataset = dataset
         self.index = index
         self.shown = shown
-        self.last_update = 0 # update counter in the Dataset object
-                             # only redraw if the dataset has a higher
-                             # update count
+        self.last_update = 0  # update counter in the Dataset object
+                              # only redraw if the dataset has a higher
+                              # update count
 
+                              
 class Hist_PyQtGraph(QtGui.QWidget):
-    def __init__(self, config, reactor, cxn = None, parent=None):
+    def __init__(self, config, reactor, cxn=None, parent=None):
         super(Hist_PyQtGraph, self).__init__(parent)
         self.cxn = cxn
         self.pv = self.cxn.parametervault
@@ -27,24 +29,35 @@ class Hist_PyQtGraph(QtGui.QWidget):
         self.should_stop = False
         self.name = config.name
         self.vline_name = config.vline
-        self.vline_param = config.line_param
+        self.vline_param = config.vline_param
 
         self.dataset_queue = Queue.Queue(config.max_datasets)
 
         self.live_update_loop = LoopingCall(self.update_figure)
         self.live_update_loop.start(0)
 
-        colors = [(255,0,0,80), (0,255,0,80), (255,255,0,80), (0,255,255,80), (255,0,255,80), (255,255,255,80)]
+        colors = [(255, 0, 0, 80),
+                  (0, 255, 0, 80),
+                  (255, 255, 0, 80),
+                  (0, 255, 255, 80),
+                  (255, 0, 255, 80),
+                  (255, 255, 255, 80)]
         self.colorChooser = itertools.cycle(colors)
         self.initUI()
 
+    @inlineCallbacks
     def initUI(self):
         self.tracelist = TraceList(self)
         self.pw = pg.PlotWidget()
         if self.vline_name:
-            self.inf = pg.InfiniteLine(movable=True, angle=90, label=self.vline_name + '{value:0.0f}',
-                               labelOpts={'position': 0.9, 'color': (200, 200, 100), 'fill': (200, 200, 200, 50),
-                                          'movable': True})
+            self.inf = pg.InfiniteLine(movable=True, angle=90,
+                                       label=self.vline_name + '{value:0.0f}',
+                                       labelOpts={'position': 0.9,
+                                                  'color': (200, 200, 100),
+                                                  'fill': (200, 200, 200, 50),
+                                                  'movable': True})
+            init_value = yield self.get_init_vline()
+            self.inf.setValue(init_value)
             self.inf.setPen(width=5.0)
         self.coords = QtGui.QLabel('')
         self.title = QtGui.QLabel(self.name)
@@ -73,6 +86,16 @@ class Hist_PyQtGraph(QtGui.QWidget):
         self.pw.scene().sigMouseMoved.connect(self.mouseMoved)
         self.pw.sigRangeChanged.connect(self.rangeChanged)
 
+    def getItemColor(self, color):
+
+        color_dict = {(255, 0, 0, 80): QtGui.QColor(QtCore.Qt.red).lighter(130),
+                      (0, 255, 0, 80): QtGui.QColor(QtCore.Qt.green),
+                      (255, 255, 0, 80): QtGui.QColor(QtCore.Qt.yellow),
+                      (0, 255, 255, 80): QtGui.QColor(QtCore.Qt.cyan),
+                      (255, 0, 255, 80): QtGui.QColor(QtCore.Qt.magenta).lighter(120),
+                      (255, 255, 255, 80): QtGui.QColor(QtCore.Qt.white)}
+        return color_dict[color]
+        
     def update_figure(self):
         for ident, params in self.artists.iteritems():
             if params.shown:
@@ -97,7 +120,7 @@ class Hist_PyQtGraph(QtGui.QWidget):
         hist = pg.PlotCurveItem([0,1],[1], stepMode=True, fillLevel=0, brush=new_color, pen=None)
         self.artists[ident] = artistParameters(hist, dataset, index, True)
         self.pw.addItem(hist)
-        self.tracelist.addTrace(ident)
+        self.tracelist.addTrace(ident, new_color)
 
     def remove_artist(self, ident):
         try:
@@ -131,13 +154,13 @@ class Hist_PyQtGraph(QtGui.QWidget):
                     self.display(ident, True)
                 if not item.checkState() and self.artists[ident].shown:
                     self.display(ident, False)
-            except KeyError: # this means the artist has been deleted.
+            except KeyError:  # this means the artist has been deleted.
                 pass
 
     def rangeChanged(self):
 
         lims = self.pw.viewRange()
-        self.pointsToKeep =  lims[0][1] - lims[0][0]
+        self.pointsToKeep = lims[0][1] - lims[0][0]
         self.current_limits = [lims[0][0], lims[0][1]]
 
     @inlineCallbacks
@@ -163,7 +186,7 @@ class Hist_PyQtGraph(QtGui.QWidget):
         self.current_limits = limits
 
     def set_ylimits(self, limits):
-        self.pw.setYRange(limits[0],limits[1])
+        self.pw.setYRange(limits[0], limits[1])
 
     def mouseMoved(self, pos):
         pnt = self.img.mapFromScene(pos)
@@ -171,10 +194,18 @@ class Hist_PyQtGraph(QtGui.QWidget):
         self.coords.setText(string)
 
     @inlineCallbacks
+    def get_init_vline(self):
+        init_vline = yield self.pv.get_parameter(self.vline_param[0],
+                                                 self.vline_param[1])
+        print init_vline
+        returnValue(init_vline)
+
+    @inlineCallbacks
     def vline_changed(self, sig):
         val = self.inf.value()
         val = int(round(val))
-        yield self.pv.set_parameter(self.vline_param[0], self.vline_param[1], val)
+        yield self.pv.set_parameter(self.vline_param[0],
+                                    self.vline_param[1], val)
 
 
 if __name__ == '__main__':
@@ -184,5 +215,4 @@ if __name__ == '__main__':
     from twisted.internet import reactor
     main = Hist_PyQtGraph('example', reactor)
     main.show()
-    #sys.exit(app.exec_())
     reactor.run()

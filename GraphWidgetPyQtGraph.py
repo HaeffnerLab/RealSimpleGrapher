@@ -2,7 +2,7 @@ import sys
 from PyQt4 import QtGui, QtCore
 import pyqtgraph as pg
 from TraceListWidget import TraceList
-from twisted.internet.defer import inlineCallbacks
+from twisted.internet.defer import inlineCallbacks, returnValue
 from twisted.internet.task import LoopingCall
 import itertools
 from Dataset import Dataset
@@ -33,7 +33,9 @@ class Graph_PyQtGraph(QtGui.QWidget):
         self.should_stop = False
         self.name = config.name
         self.vline_name = config.vline
-        self.vline_param = config.line_param
+        self.vline_param = config.vline_param
+        self.hline_name = config.hline
+        self.hline_param = config.hline_param
         self.show_points = config.show_points
         self.grid_on = config.grid_on
         self.scatter_plot = config.scatter_plot
@@ -47,13 +49,30 @@ class Graph_PyQtGraph(QtGui.QWidget):
         self.colorChooser = itertools.cycle(colors)
         self.initUI()
 
+    @inlineCallbacks
     def initUI(self):
         self.tracelist = TraceList(self)
         self.pw = pg.PlotWidget()
         if self.vline_name:
-            self.inf = pg.InfiniteLine(movable=True, angle=90, label=self.vline_name + '{value:0.0f}',
-                               labelOpts={'position': 0.9, 'color': (200, 200, 100), 'fill': (200, 200, 200, 50),
-                                          'movable': True})
+            self.inf = pg.InfiniteLine(movable=True, angle=90,
+                                       label=self.vline_name + '{value:0.0f}',
+                                       labelOpts={'position': 0.9,
+                                                  'color': (200, 200, 100),
+                                                  'fill': (200, 200, 200, 50),
+                                                  'movable': True})
+            init_value = yield self.get_init_vline()
+            self.inf.setValue(init_value)
+            self.inf.setPen(width=5.0)
+
+        if self.hline_name:
+            self.inf = pg.InfiniteLine(movable=True, angle=0,
+                                       label=self.hline_name + '{value:0.0f}',
+                                       labelOpts={'position': 0.9,
+                                                  'color': (200, 200, 100),
+                                                  'fill': (200, 200, 200, 50),
+                                                  'movable': True})
+            init_value = yield self.get_init_hline()
+            self.inf.setValue(init_value)
             self.inf.setPen(width=5.0)
 
         self.coords = QtGui.QLabel('')
@@ -81,8 +100,21 @@ class Graph_PyQtGraph(QtGui.QWidget):
             vb.addItem(self.inf)
             self.inf.sigPositionChangeFinished.connect(self.vline_changed)
 
+        if self.hline_name:
+            vb.addItem(self.inf)
+            self.inf.sigPositionChangeFinished.connect(self.hline_changed)
+
         self.pw.scene().sigMouseMoved.connect(self.mouseMoved)
         self.pw.sigRangeChanged.connect(self.rangeChanged)
+
+    def getItemColor(self, color):
+        color_dict = {"r": QtGui.QColor(QtCore.Qt.red).lighter(130),
+                      "g": QtGui.QColor(QtCore.Qt.green),
+                      "y": QtGui.QColor(QtCore.Qt.yellow),
+                      "c": QtGui.QColor(QtCore.Qt.cyan),
+                      "m": QtGui.QColor(QtCore.Qt.magenta).lighter(120),
+                      "w": QtGui.QColor(QtCore.Qt.white)}
+        return color_dict[color]
 
     def update_figure(self):
         for ident, params in self.artists.iteritems():
@@ -105,14 +137,14 @@ class Graph_PyQtGraph(QtGui.QWidget):
         '''
         new_color = self.colorChooser.next()
         if self.show_points and not no_points:
-            line = self.pw.plot([], [], symbol='o', symbolBrush=new_color,
-                                name=ident, pen = new_color, connect=self.scatter_plot)
+            line = self.pw.plot([], [], symbol='o', symbolBrush=self.getItemColor(new_color),
+                                name=ident, pen = self.getItemColor(new_color), connect=self.scatter_plot)
         else:
-            line = self.pw.plot([], [], pen = new_color, name = ident)
+            line = self.pw.plot([], [], pen = self.getItemColor(new_color), name = ident)
         if self.grid_on:
             self.pw.showGrid(x=True, y=True)
         self.artists[ident] = artistParameters(line, dataset, index, True)
-        self.tracelist.addTrace(ident)
+        self.tracelist.addTrace(ident, new_color)
 
     def remove_artist(self, ident):
         try:
@@ -189,12 +221,32 @@ class Graph_PyQtGraph(QtGui.QWidget):
         self.coords.setText(string)
 
     @inlineCallbacks
+    def get_init_vline(self):
+        init_vline = yield self.pv.get_parameter(self.vline_param[0],
+                                                 self.vline_param[1])
+        returnValue(init_vline)
+
+    @inlineCallbacks
+    def get_init_hline(self):
+        init_hline = yield self.pv.get_parameter(self.hline_param[0],
+                                                 self.hline_param[1])
+        returnValue(init_hline)
+
+    @inlineCallbacks
     def vline_changed(self, sig):
         val = self.inf.value()
         param = yield self.pv.get_parameter(self.vline_param[0], self.vline_param[1])
         units = param.units
         val = self.U(val, units)
         yield self.pv.set_parameter(self.vline_param[0], self.vline_param[1], val)
+
+    @inlineCallbacks
+    def hline_changed(self, sig):
+        val = self.inf.value()
+        param = yield self.pv.get_parameter(self.hline_param[0], self.hline_param[1])
+        units = param.units
+        val = self.U(val, units)
+        yield self.pv.set_parameter(self.hline_param[0], self.hline_param[1], val)
 
 if __name__ == '__main__':
     app = QtGui.QApplication(sys.argv)

@@ -13,6 +13,11 @@ class TraceList(QtGui.QListWidget):
         self.windows = []
         self.config = traceListConfig()
         self.setStyleSheet("background-color:%s;" % self.config.background_color)
+        try:
+            self.use_trace_color = self.config.use_trace_color
+        except AttributeError:
+            self.use_trace_color = False
+
         self.name = 'pmt'
         self.initUI()
 
@@ -23,10 +28,15 @@ class TraceList(QtGui.QListWidget):
         self.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
         self.customContextMenuRequested.connect(self.popupMenu)
 
-    def addTrace(self, ident):
+
+    def addTrace(self, ident, color):
         item = QtGui.QListWidgetItem(ident)
 
-        item.setForeground(QtGui.QColor(255, 255, 255))
+        if self.use_trace_color:
+            foreground_color = self.parent.getItemColor(color)
+            item.setForeground(foreground_color)
+        else:
+            item.setForeground(QtGui.QColor(255, 255, 255))
         item.setBackground(QtGui.QColor(0, 0, 0))
 
         item.setCheckState(QtCore.Qt.Checked)
@@ -38,6 +48,10 @@ class TraceList(QtGui.QListWidget):
         row = self.row(item)
         self.takeItem(row)
         item = None
+
+    def changeTraceListColor(self, ident, new_color):
+        item = self.trace_dict[ident]
+        item.setForeground(self.parent.getItemColor(new_color))
 
     def popupMenu(self, pos):
         menu = QtGui.QMenu()
@@ -86,10 +100,13 @@ class TraceList(QtGui.QListWidget):
                 # option to change color of line
                 new_color = self.parent.colorChooser.next()
                 #self.parent.artists[ident].artist.setData(color = new_color, symbolBrush = new_color)
+                self.parent.artists[ident].artist.setPen(new_color)
                 if self.parent.show_points:
                     self.parent.artists[ident].artist.setData(pen = new_color, symbolBrush = new_color)
+                    self.changeTraceListColor(ident, new_color)
                 else:
                     self.parent.artists[ident].artist.setData(pen = new_color)
+                    self.changeTraceListColor(ident, new_color)
 
             if action == fitAction:
                 dataset = self.parent.artists[ident].dataset
@@ -100,7 +117,10 @@ class TraceList(QtGui.QListWidget):
 
             if action in colorActionDict.keys():
                 new_color = colorActionDict[action]
+                self.parent.artists[ident].artist.setPen(new_color)
                 if self.parent.show_points:
                     self.parent.artists[ident].artist.setData(pen = new_color, symbolBrush = new_color)
+                    self.changeTraceListColor(ident, new_color)
                 else:
                     self.parent.artists[ident].artist.setData(pen = new_color)
+                    self.changeTraceListColor(ident, new_color)
