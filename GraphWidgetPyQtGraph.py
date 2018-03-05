@@ -2,7 +2,7 @@ import sys
 from PyQt4 import QtGui, QtCore
 import pyqtgraph as pg
 from TraceListWidget import TraceList
-from twisted.internet.defer import inlineCallbacks
+from twisted.internet.defer import inlineCallbacks, returnValue
 from twisted.internet.task import LoopingCall
 import itertools
 from Dataset import Dataset
@@ -49,20 +49,30 @@ class Graph_PyQtGraph(QtGui.QWidget):
         self.colorChooser = itertools.cycle(colors)
         self.initUI()
 
+    @inlineCallbacks
     def initUI(self):
         self.tracelist = TraceList(self)
         self.pw = pg.PlotWidget()
         if self.vline_name:
-            self.inf = pg.InfiniteLine(movable=True, angle=90, label=self.vline_name + '{value:0.0f}',
-                               labelOpts={'position': 0.9, 'color': (200, 200, 100), 'fill': (200, 200, 200, 50),
-                                          'movable': True})
+            self.inf = pg.InfiniteLine(movable=True, angle=90,
+                                       label=self.vline_name + '{value:0.0f}',
+                                       labelOpts={'position': 0.9,
+                                                  'color': (200, 200, 100),
+                                                  'fill': (200, 200, 200, 50),
+                                                  'movable': True})
+            init_value = yield self.get_init_vline()
+            self.inf.setValue(init_value)
             self.inf.setPen(width=5.0)
 
         if self.hline_name:
-            print self.hline_name
-            self.inf = pg.InfiniteLine(movable=True, angle=0, label=self.hline_name + '{value:0.0f}',
-                               labelOpts={'position': 0.9, 'color': (200, 200, 100), 'fill': (200, 200, 200, 50),
-                                          'movable': True})
+            self.inf = pg.InfiniteLine(movable=True, angle=0,
+                                       label=self.hline_name + '{value:0.0f}',
+                                       labelOpts={'position': 0.9,
+                                                  'color': (200, 200, 100),
+                                                  'fill': (200, 200, 200, 50),
+                                                  'movable': True})
+            init_value = yield self.get_init_hline()
+            self.inf.setValue(init_value)
             self.inf.setPen(width=5.0)
 
         self.coords = QtGui.QLabel('')
@@ -209,6 +219,18 @@ class Graph_PyQtGraph(QtGui.QWidget):
         pnt = self.img.mapFromScene(pos)
         string = '(' + str(pnt.x()) + ' , ' + str(pnt.y()) + ')'
         self.coords.setText(string)
+
+    @inlineCallbacks
+    def get_init_vline(self):
+        init_vline = yield self.pv.get_parameter(self.vline_param[0],
+                                                 self.vline_param[1])
+        returnValue(init_vline)
+
+    @inlineCallbacks
+    def get_init_hline(self):
+        init_hline = yield self.pv.get_parameter(self.hline_param[0],
+                                                 self.hline_param[1])
+        returnValue(init_hline)
 
     @inlineCallbacks
     def vline_changed(self, sig):

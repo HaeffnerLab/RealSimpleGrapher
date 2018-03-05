@@ -2,7 +2,7 @@ import sys
 from PyQt4 import QtGui, QtCore
 import pyqtgraph as pg
 from TraceListWidget import TraceList
-from twisted.internet.defer import inlineCallbacks
+from twisted.internet.defer import inlineCallbacks, returnValue
 from twisted.internet.task import LoopingCall
 import itertools
 import Queue
@@ -45,6 +45,7 @@ class Hist_PyQtGraph(QtGui.QWidget):
         self.colorChooser = itertools.cycle(colors)
         self.initUI()
 
+    @inlineCallbacks
     def initUI(self):
         self.tracelist = TraceList(self)
         self.pw = pg.PlotWidget()
@@ -55,6 +56,8 @@ class Hist_PyQtGraph(QtGui.QWidget):
                                                   'color': (200, 200, 100),
                                                   'fill': (200, 200, 200, 50),
                                                   'movable': True})
+            init_value = yield self.get_init_vline()
+            self.inf.setValue(init_value)
             self.inf.setPen(width=5.0)
         self.coords = QtGui.QLabel('')
         self.title = QtGui.QLabel(self.name)
@@ -151,13 +154,13 @@ class Hist_PyQtGraph(QtGui.QWidget):
                     self.display(ident, True)
                 if not item.checkState() and self.artists[ident].shown:
                     self.display(ident, False)
-            except KeyError: # this means the artist has been deleted.
+            except KeyError:  # this means the artist has been deleted.
                 pass
 
     def rangeChanged(self):
 
         lims = self.pw.viewRange()
-        self.pointsToKeep =  lims[0][1] - lims[0][0]
+        self.pointsToKeep = lims[0][1] - lims[0][0]
         self.current_limits = [lims[0][0], lims[0][1]]
 
     @inlineCallbacks
@@ -183,7 +186,7 @@ class Hist_PyQtGraph(QtGui.QWidget):
         self.current_limits = limits
 
     def set_ylimits(self, limits):
-        self.pw.setYRange(limits[0],limits[1])
+        self.pw.setYRange(limits[0], limits[1])
 
     def mouseMoved(self, pos):
         pnt = self.img.mapFromScene(pos)
@@ -191,10 +194,18 @@ class Hist_PyQtGraph(QtGui.QWidget):
         self.coords.setText(string)
 
     @inlineCallbacks
+    def get_init_vline(self):
+        init_vline = yield self.pv.get_parameter(self.vline_param[0],
+                                                 self.vline_param[1])
+        print init_vline
+        returnValue(init_vline)
+
+    @inlineCallbacks
     def vline_changed(self, sig):
         val = self.inf.value()
         val = int(round(val))
-        yield self.pv.set_parameter(self.vline_param[0], self.vline_param[1], val)
+        yield self.pv.set_parameter(self.vline_param[0],
+                                    self.vline_param[1], val)
 
 
 if __name__ == '__main__':
@@ -204,5 +215,4 @@ if __name__ == '__main__':
     from twisted.internet import reactor
     main = Hist_PyQtGraph('example', reactor)
     main.show()
-    #sys.exit(app.exec_())
     reactor.run()
