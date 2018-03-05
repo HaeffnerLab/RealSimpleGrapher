@@ -98,8 +98,12 @@ class Graph_PyQtGraph(QtGui.QWidget):
         self.pw.sigRangeChanged.connect(self.rangeChanged)
 
     def getItemColor(self, color):
-        color_dict = {"r" : QtGui.QColor(QtCore.Qt.red).lighter(130), "g" : QtGui.QColor(QtCore.Qt.green), "y" : QtGui.QColor(QtCore.Qt.yellow),
-                      "c" : QtGui.QColor(QtCore.Qt.cyan), "m" : QtGui.QColor(QtCore.Qt.magenta).lighter(120), "w" : QtGui.QColor(QtCore.Qt.white)}
+        color_dict = {"r": QtGui.QColor(QtCore.Qt.red).lighter(130),
+                      "g": QtGui.QColor(QtCore.Qt.green),
+                      "y": QtGui.QColor(QtCore.Qt.yellow),
+                      "c": QtGui.QColor(QtCore.Qt.cyan),
+                      "m": QtGui.QColor(QtCore.Qt.magenta).lighter(120),
+                      "w": QtGui.QColor(QtCore.Qt.white)}
         return color_dict[color]
 
     def update_figure(self):

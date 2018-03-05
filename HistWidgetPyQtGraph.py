@@ -7,18 +7,20 @@ from twisted.internet.task import LoopingCall
 import itertools
 import Queue
 
+
 class artistParameters():
     def __init__(self, artist, dataset, index, shown):
         self.artist = artist
         self.dataset = dataset
         self.index = index
         self.shown = shown
-        self.last_update = 0 # update counter in the Dataset object
-                             # only redraw if the dataset has a higher
-                             # update count
+        self.last_update = 0  # update counter in the Dataset object
+                              # only redraw if the dataset has a higher
+                              # update count
 
+                              
 class Hist_PyQtGraph(QtGui.QWidget):
-    def __init__(self, config, reactor, cxn = None, parent=None):
+    def __init__(self, config, reactor, cxn=None, parent=None):
         super(Hist_PyQtGraph, self).__init__(parent)
         self.cxn = cxn
         self.pv = self.cxn.parametervault
@@ -34,7 +36,12 @@ class Hist_PyQtGraph(QtGui.QWidget):
         self.live_update_loop = LoopingCall(self.update_figure)
         self.live_update_loop.start(0)
 
-        colors = [(255,0,0,80), (0,255,0,80), (255,255,0,80), (0,255,255,80), (255,0,255,80), (255,255,255,80)]
+        colors = [(255, 0, 0, 80),
+                  (0, 255, 0, 80),
+                  (255, 255, 0, 80),
+                  (0, 255, 255, 80),
+                  (255, 0, 255, 80),
+                  (255, 255, 255, 80)]
         self.colorChooser = itertools.cycle(colors)
         self.initUI()
 
@@ -42,9 +49,12 @@ class Hist_PyQtGraph(QtGui.QWidget):
         self.tracelist = TraceList(self)
         self.pw = pg.PlotWidget()
         if self.vline_name:
-            self.inf = pg.InfiniteLine(movable=True, angle=90, label=self.vline_name + '{value:0.0f}',
-                               labelOpts={'position': 0.9, 'color': (200, 200, 100), 'fill': (200, 200, 200, 50),
-                                          'movable': True})
+            self.inf = pg.InfiniteLine(movable=True, angle=90,
+                                       label=self.vline_name + '{value:0.0f}',
+                                       labelOpts={'position': 0.9,
+                                                  'color': (200, 200, 100),
+                                                  'fill': (200, 200, 200, 50),
+                                                  'movable': True})
             self.inf.setPen(width=5.0)
         self.coords = QtGui.QLabel('')
         self.title = QtGui.QLabel(self.name)
@@ -73,6 +83,16 @@ class Hist_PyQtGraph(QtGui.QWidget):
         self.pw.scene().sigMouseMoved.connect(self.mouseMoved)
         self.pw.sigRangeChanged.connect(self.rangeChanged)
 
+    def getItemColor(self, color):
+
+        color_dict = {(255, 0, 0, 80): QtGui.QColor(QtCore.Qt.red).lighter(130),
+                      (0, 255, 0, 80): QtGui.QColor(QtCore.Qt.green),
+                      (255, 255, 0, 80): QtGui.QColor(QtCore.Qt.yellow),
+                      (0, 255, 255, 80): QtGui.QColor(QtCore.Qt.cyan),
+                      (255, 0, 255, 80): QtGui.QColor(QtCore.Qt.magenta).lighter(120),
+                      (255, 255, 255, 80): QtGui.QColor(QtCore.Qt.white)}
+        return color_dict[color]
+        
     def update_figure(self):
         for ident, params in self.artists.iteritems():
             if params.shown:
