@@ -7,10 +7,18 @@ from fit_gaussian import Gaussian
 from fit_linear import Linear
 from fit_rabi import Rabi
 from fit_bessel import Bessel
+from fit_rotrabi import RotRabi
+from fit_rotramsey import RotRamsey
+from fit_sinusoid import Sinusoid
+from fit_sinusoid2 import Sinusoid2
+from fit_expdecay import ExponentialDecay
+from fit_gaussdecay import GaussianDecay
+from fit_ramsey import RamseyDecay
+from fit_ramseybfield import RamseyBfield
 
 class FitWrapper():
 
-    models = ['Lorentzian', 'Gaussian', 'Rabi', 'Linear', 'Bessel']
+    models = ['Lorentzian', 'Gaussian', 'Rabi', 'RotRabi', 'RotRamsey', 'Linear', 'Bessel', 'Sinusoid', 'Sinusoid2', 'ExponentialDecay', 'GaussianDecay', 'RamseyDecay','RamseyBfield']
 
     def __init__(self, dataset, index):
         self.dataset = dataset
@@ -23,7 +31,15 @@ class FitWrapper():
             'Gaussian': Gaussian,
             'Linear': Linear,
             'Rabi': Rabi,
-	    'Bessel': Bessel
+            'RotRabi': RotRabi,
+            'RotRamsey': RotRamsey,
+	        'Bessel': Bessel,
+            'Sinusoid': Sinusoid,
+            'Sinusoid2': Sinusoid2,
+            'ExponentialDecay': ExponentialDecay,
+            'GaussianDecay': GaussianDecay,
+            'RamseyDecay': RamseyDecay,
+            'RamseyBfield': RamseyBfield
             }
         self.model = model_dict[model]()
 
@@ -72,6 +88,7 @@ class FitWrapper():
         varied_positions = self.model.varied_positions()
         fixed_positions = self.model.fixed_positions()
         x0 = [self.model.param_from_index(k).manual_value for k in varied_positions]
+        
         result = optimize.leastsq(residual, x0)
         result = result[0]
 
