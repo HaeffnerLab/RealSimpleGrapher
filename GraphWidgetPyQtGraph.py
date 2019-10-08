@@ -53,6 +53,7 @@ class Graph_PyQtGraph(QtGui.QWidget):
     def initUI(self):
         self.tracelist = TraceList(self)
         self.pw = pg.PlotWidget()
+        self._set_axes_font(20)
         if self.vline_name:
             self.inf = pg.InfiniteLine(movable=True, angle=90,
                                        label=self.vline_name + '{value:0.0f}',
@@ -106,6 +107,22 @@ class Graph_PyQtGraph(QtGui.QWidget):
 
         self.pw.scene().sigMouseMoved.connect(self.mouseMoved)
         self.pw.sigRangeChanged.connect(self.rangeChanged)
+        
+    def _set_axes_font(self, font_size):
+        font = QtGui.QFont()
+        font.setPixelSize(font_size)
+        left_axis = self.pw.plotItem.getAxis("left")
+        left_axis.tickFont = font
+        left_axis.setWidth(font_size * 7)
+        left_axis.setStyle(tickTextOffset=font_size/2)
+        left_axis.setStyle(textFillLimits=[(0, 0.6), (2, 0.4),
+                                           (4, 0.2), (6, 0.0)])
+        bottom_axis = self.pw.plotItem.getAxis("bottom")
+        bottom_axis.tickFont = font
+        bottom_axis.setHeight(font_size * 2)
+        bottom_axis.setStyle(tickTextOffset=font_size/2)
+        bottom_axis.setStyle(textFillLimits=[(0, 0.6), (2, 0.4),
+                                             (4, 0.2), (6, 0.0)])
 
     def getItemColor(self, color):
         color_dict = {"r": QtGui.QColor(QtCore.Qt.red).lighter(130),
