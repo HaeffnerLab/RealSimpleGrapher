@@ -59,6 +59,7 @@ class TraceList(QtGui.QListWidget):
         if (item == None): 
             dataaddAction = menu.addAction('Add Data Set')
             spectrumaddAction = menu.addAction('Add Predicted Spectrum')
+            removeallAction = menu.addAction('Remove All Traces')
 
             action = menu.exec_(self.mapToGlobal(pos))
             if action == dataaddAction:
@@ -71,7 +72,10 @@ class TraceList(QtGui.QListWidget):
                 self.windows.append(ps)
                 ps.show()
 
-
+            if action == removeallAction:
+                for kk in reversed(range(self.count())):
+                    ident = str(self.item(kk).text())
+                    self.parent.remove_artist(ident)
 
         else:
             ident = str(item.text())
@@ -85,6 +89,7 @@ class TraceList(QtGui.QListWidget):
             cyanAction = selectColorMenu.addAction("Cyan")
             magentaAction = selectColorMenu.addAction("Magenta")
             whiteAction = selectColorMenu.addAction("White")
+            removeAction = menu.addAction('Remove')
             colorActionDict = {redAction:"r", greenAction:"g", yellowAction:"y", cyanAction:"c", magentaAction:"m", whiteAction:"w"}
 
             action = menu.exec_(self.mapToGlobal(pos))
@@ -124,3 +129,6 @@ class TraceList(QtGui.QListWidget):
                 else:
                     self.parent.artists[ident].artist.setData(pen = new_color)
                     self.changeTraceListColor(ident, new_color)
+
+            if action == removeAction:
+                self.parent.remove_artist(ident)
