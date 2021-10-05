@@ -1,6 +1,6 @@
 # test script for Lorentzian fits
-from model_test import ModelTest
-from fit_lorentzian import Lorentzian
+from .model_test import ModelTest
+from .fit_lorentzian import Lorentzian
 
 test = ModelTest(Lorentzian, 'Lorentzian')
 true_params = [130., 1., 5., 0.1]
