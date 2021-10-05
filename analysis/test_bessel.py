@@ -1,6 +1,6 @@
 # test script for Lorentzian fits
 from .model_test import ModelTest
-from fit_bessel import Bessel
+from .fit_bessel import Bessel
 
 test = ModelTest(Bessel, 'Bessel')
 true_params = [130., 1., 5., 0.1, 1]
