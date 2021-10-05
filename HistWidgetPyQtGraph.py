@@ -97,7 +97,7 @@ class Hist_PyQtGraph(QtWidgets.QWidget):
         return color_dict[color]
         
     def update_figure(self):
-        for ident, params in self.artists.iteritems():
+        for ident, params in self.artists.items():
             if params.shown:
                 try:
                     ds = params.dataset
@@ -148,7 +148,7 @@ class Hist_PyQtGraph(QtWidgets.QWidget):
             raise Exception('404 Artist not found')
 
     def checkboxChanged(self):
-        for ident, item in self.tracelist.trace_dict.iteritems():
+        for ident, item in self.tracelist.trace_dict.items():
             try:
                 if item.checkState() and not self.artists[ident].shown:
                     self.display(ident, True)

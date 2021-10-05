@@ -1,5 +1,5 @@
 # test script for Lorentzian fits
-from model_test import ModelTest
+from .model_test import ModelTest
 from fit_bessel import Bessel
 
 test = ModelTest(Bessel, 'Bessel')

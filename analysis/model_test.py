@@ -3,7 +3,7 @@
 
 import numpy as np
 import matplotlib.pyplot as plt
-from fitting import FitWrapper
+from .fitting import FitWrapper
 
 class ModelTest():
     

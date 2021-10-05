@@ -178,7 +178,7 @@ class Graph_PyQtGraph(QtWidgets.QWidget):
             raise Exception('404 Artist not found')
 
     def checkboxChanged(self):
-        for ident, item in self.tracelist.trace_dict.iteritems():
+        for ident, item in self.tracelist.trace_dict.items():
             try:
                 if item.checkState() and not self.artists[ident].shown:
                     self.display(ident, True)
@@ -259,5 +259,5 @@ if __name__ == '__main__':
     from twisted.internet import reactor
     main = Graph_PyQtGraph('example', reactor)
     main.show()
-    #sys.exit(app.exec_())
     reactor.run()
+    #sys.exit(app.exec_())

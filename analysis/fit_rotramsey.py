@@ -1,6 +1,6 @@
 # Fitter class for Rabi flops
 
-from model import Model, ParameterInfo
+from .model import Model, ParameterInfo
 from rabi.motional_distribution import motional_distribution as md
 from rabi.rabi_coupling import rabi_coupling as rc
 import scipy.constants as scc

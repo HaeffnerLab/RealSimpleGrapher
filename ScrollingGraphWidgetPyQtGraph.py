@@ -8,7 +8,7 @@ class ScrollingGraph_PyQtGraph(Graph):
         self.pointsToKeep = 100
 
     def update_figure(self, _input = None):
-        for ident, params in self.artists.iteritems():
+        for ident, params in self.artists.items():
             if params.shown:
                 try:
                     index = params.index
