@@ -93,10 +93,10 @@ class imageWidget(QtWidgets.QWidget):
 
 if __name__ == '__main__':
     app = QtWidgets.QApplication(sys.argv)
-    import qt5reactor
-    qt5reactor.install()
+    #import qt5reactor
+    #qt5reactor.install()
     from twisted.internet import reactor
-    main = imageWidget('example', reactor)
+    main = imageWidget('Example', reactor)
     main.show()
     #sys.exit(app.exec_())
     reactor.run()
