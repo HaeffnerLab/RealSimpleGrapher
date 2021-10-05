@@ -1,16 +1,19 @@
 import sys
-from PyQt4 import QtGui, QtCore
+from PyQt5 import QtCore, QtWidgets, QtGui
 import pyqtgraph as pg
 from TraceListWidget import TraceList
 from twisted.internet.defer import inlineCallbacks, returnValue
 from twisted.internet.task import LoopingCall
 import itertools
 from Dataset import Dataset
-import Queue
+import queue
 
 import numpy as np
 from numpy import random
 
+import sys
+
+sys.settrace(None)
 class artistParameters():
     def __init__(self, artist, dataset, index, shown):
         self.artist = artist
@@ -21,13 +24,14 @@ class artistParameters():
                              # only redraw if the dataset has a higher
                              # update count
 
-class Graph_PyQtGraph(QtGui.QWidget):
+class Graph_PyQtGraph(QtWidgets.QWidget):
     def __init__(self, config, reactor, cxn = None, parent=None):
         super(Graph_PyQtGraph, self).__init__(parent)
         from labrad.units import WithUnit as U
         self.U = U
         self.cxn = cxn
-        self.pv = self.cxn.parametervault
+        #todo: undo
+        #self.pv = self.cxn.parametervault
         self.reactor = reactor
         self.artists = {}
         self.should_stop = False
@@ -40,7 +44,7 @@ class Graph_PyQtGraph(QtGui.QWidget):
         self.grid_on = config.grid_on
         self.scatter_plot = config.scatter_plot
 
-        self.dataset_queue = Queue.Queue(config.max_datasets)
+        self.dataset_queue = queue.Queue(config.max_datasets)
 
         self.live_update_loop = LoopingCall(self.update_figure)
         self.live_update_loop.start(0)
@@ -75,13 +79,13 @@ class Graph_PyQtGraph(QtGui.QWidget):
             self.inf.setValue(init_value)
             self.inf.setPen(width=5.0)
 
-        self.coords = QtGui.QLabel('')
-        self.title = QtGui.QLabel(self.name)
-        frame = QtGui.QFrame()
-        splitter = QtGui.QSplitter()
+        self.coords = QtWidgets.QLabel('')
+        self.title = QtWidgets.QLabel(self.name)
+        frame = QtWidgets.QFrame()
+        splitter = QtWidgets.QSplitter()
         splitter.addWidget(self.tracelist)
-        hbox = QtGui.QHBoxLayout()
-        vbox = QtGui.QVBoxLayout()
+        hbox = QtWidgets.QHBoxLayout()
+        vbox = QtWidgets.QVBoxLayout()
         vbox.addWidget(self.title)
         vbox.addWidget(self.pw)
         vbox.addWidget(self.coords)
@@ -117,7 +121,7 @@ class Graph_PyQtGraph(QtGui.QWidget):
         return color_dict[color]
 
     def update_figure(self):
-        for ident, params in self.artists.iteritems():
+        for ident, params in self.artists.items():
             if params.shown:
                 try:
                     ds = params.dataset
@@ -158,7 +162,7 @@ class Graph_PyQtGraph(QtGui.QWidget):
             except KeyError:
                 pass
         except:
-            print "remove failed"
+            print("remove failed")
 
     def display(self, ident, shown):
         try:
@@ -215,7 +219,7 @@ class Graph_PyQtGraph(QtGui.QWidget):
         self.pw.setYRange(limits[0],limits[1])
 
     def mouseMoved(self, pos):
-        #print "Image position:", self.img.mapFromScene(pos)
+        #print("Image position:", self.img.mapFromScene(pos))
         pnt = self.img.mapFromScene(pos)
         string = '(' + str(pnt.x()) + ' , ' + str(pnt.y()) + ')'
         self.coords.setText(string)
@@ -249,9 +253,9 @@ class Graph_PyQtGraph(QtGui.QWidget):
         yield self.pv.set_parameter(self.hline_param[0], self.hline_param[1], val)
 
 if __name__ == '__main__':
-    app = QtGui.QApplication(sys.argv)
-    import qt4reactor
-    qt4reactor.install()
+    app = QtWidgets.QApplication(sys.argv)
+    import qt5reactor
+    qt5reactor.install()
     from twisted.internet import reactor
     main = Graph_PyQtGraph('example', reactor)
     main.show()

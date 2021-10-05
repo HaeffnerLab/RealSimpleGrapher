@@ -42,11 +42,11 @@ class motional_distribution(object):
             populations = 1./ (nbar + 1.0) * (nbar / (nbar + 1.0))**n * laguerre(n, 0 , -alpha**2 / ( nbar * (nbar + 1.0))) * np.exp( -alpha**2 / (nbar + 1.0))
         except FloatingPointError:
             np.seterr(**old_settings)
-            print 'precise calculation required', alpha, nbar
+            print('precise calculation required', alpha, nbar)
             populations = [mp.fprod(( 1./ (nbar + 1.0),   mp.power(nbar / (nbar + 1.0), k), mp.laguerre(k, 0, -alpha**2 / ( nbar * (nbar + 1.0))), mp.exp(-alpha**2 / (nbar + 1.0)))) for k in n]
-            print 'done computing populations'
+            print('done computing populations')
             populations = np.array(populations) 
-            print 'returned array'
+            print('returned array')
         return populations
     
     @classmethod
@@ -89,7 +89,7 @@ if __name__ == '__main__':
             displacement_nbar = displ
             displacement_alpha = np.sqrt(displacement_nbar)
             distribution = md.displaced_thermal(displacement_alpha, nbar, hilbert_space_dimension)
-            print distribution.sum()
+            print(distribution.sum())
             pyplot.plot(distribution, 'x', color = color, label = 'displacement = {} nbar'.format(displ))
         
         pyplot.title('Init temperature 3nbar', fontsize = 16)
@@ -97,6 +97,6 @@ if __name__ == '__main__':
         pyplot.legend()
         pyplot.show()
     
-#     print md.test_thermal_distribution()
-#     print md.test_displaced_thermal()
+#     print(md.test_thermal_distribution())
+#     print(md.test_displaced_thermal())
     plot_displaced()

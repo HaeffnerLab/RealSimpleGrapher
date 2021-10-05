@@ -52,7 +52,7 @@ class ModelTest():
         
     def print_results(self):
         
-        print '***** FIT RESULTS *****'
-        print '{}\t{}\t{}'.format('PARAM','TRUE','FITTED')
+        print('***** FIT RESULTS *****')
+        print('{}\t{}\t{}'.format('PARAM','TRUE','FITTED'))
         for i, p in enumerate(self.fw.getParameters()):
-            print '{}\t{}\t{}'.format(p, self.true_params[i], self.fw.getFittedValue(p))
+            print('{}\t{}\t{}'.format(p, self.true_params[i], self.fw.getFittedValue(p)))
