@@ -1,5 +1,5 @@
-import qt5reactor
-qt5reactor.install()
+# import qt5reactor
+# qt5reactor.install()
 from PyQt5 import QtWidgets, QtCore
 from twisted.internet.defer import inlineCallbacks, returnValue, DeferredLock, Deferred
 from fractions import Fraction

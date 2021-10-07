@@ -99,7 +99,7 @@ class Graph_PyQtGraph(QtWidgets.QWidget):
         vb = self.pw.plotItem.vb
         self.img = pg.ImageItem()
         vb.addItem(self.img)
-
+        print("thkim1")
         if self.vline_name:
             vb.addItem(self.inf)
             self.inf.sigPositionChangeFinished.connect(self.vline_changed)
@@ -139,7 +139,7 @@ class Graph_PyQtGraph(QtWidgets.QWidget):
         no_points is an override parameter to the global show_points setting.
         It is to allow data fits to be plotted without points
         '''
-        new_color = self.colorChooser.next()
+        new_color = next(self.colorChooser)
         if self.show_points and not no_points:
             line = self.pw.plot([], [], symbol='o', symbolBrush=self.getItemColor(new_color),
                                 name=ident, pen = self.getItemColor(new_color), connect=self.scatter_plot)
@@ -219,7 +219,7 @@ class Graph_PyQtGraph(QtWidgets.QWidget):
         self.pw.setYRange(limits[0],limits[1])
 
     def mouseMoved(self, pos):
-        #print("Image position:", self.img.mapFromScene(pos))
+        print("Image position:", self.img.mapFromScene(pos))
         pnt = self.img.mapFromScene(pos)
         string = '(' + str(pnt.x()) + ' , ' + str(pnt.y()) + ')'
         self.coords.setText(string)
