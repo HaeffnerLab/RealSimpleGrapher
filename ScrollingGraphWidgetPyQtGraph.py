@@ -23,7 +23,6 @@ class ScrollingGraph_PyQtGraph(Graph):
             mousepressed = QtWidgets.QApplication.instance().MouseButton
             #a.mouseButtons()
             if mousepressed == (QtCore.Qt.LeftButton or QtCore.Qt.RightButton):
-                print("thkimde")
                 return
                 # see if we need to redraw
             xmin_cur, xmax_cur = self.current_limits

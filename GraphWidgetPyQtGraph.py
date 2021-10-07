@@ -99,7 +99,6 @@ class Graph_PyQtGraph(QtWidgets.QWidget):
         vb = self.pw.plotItem.vb
         self.img = pg.ImageItem()
         vb.addItem(self.img)
-        print("thkim1")
         if self.vline_name:
             vb.addItem(self.inf)
             self.inf.sigPositionChangeFinished.connect(self.vline_changed)
@@ -254,8 +253,8 @@ class Graph_PyQtGraph(QtWidgets.QWidget):
 
 if __name__ == '__main__':
     app = QtWidgets.QApplication(sys.argv)
-    #import qt5reactor
-    #qt5reactor.install()
+    import qt5reactor
+    qt5reactor.install()
     from twisted.internet import reactor
     main = Graph_PyQtGraph('example', reactor)
     main.show()

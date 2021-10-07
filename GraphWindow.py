@@ -65,12 +65,8 @@ class GraphWindow(QtWidgets.QTabWidget):
 
 if __name__ == '__main__':
     app = QtWidgets.QApplication(sys.argv)
-    # import qt5reactor
-    # qt5reactor.install()
-    # from twisted.internet import reactor
-    # from twisted.application import reactors
-    # reactors.installReactor('qt4')
-    from twisted.internet import reactor
+    import qt5reactor
+    qt5reactor.install()
     main = GraphWindow(reactor)
     main.show()
     #sys.exit(app.exec_())

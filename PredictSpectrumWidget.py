@@ -1,12 +1,9 @@
-# import qt5reactor
-# qt5reactor.install()
 from PyQt5 import QtWidgets, QtCore
 from twisted.internet.defer import inlineCallbacks, returnValue, DeferredLock, Deferred
 from fractions import Fraction
 # from labrad import units as U
 # from labrad.units import WithUnit
 import numpy as np
-# from common.abstractdevices.SD_tracker.SD_calculator import Transitions_SD as tracker 
 
 class ParamInfo():
     '''
