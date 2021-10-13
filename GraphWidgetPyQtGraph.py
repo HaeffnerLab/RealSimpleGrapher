@@ -196,7 +196,7 @@ class Graph_PyQtGraph(QtWidgets.QWidget):
     def add_dataset(self, dataset):
         try:
             self.dataset_queue.put(dataset, block=False)
-        except Queue.Full:
+        except queue.Full:
             remove_ds = self.dataset_queue.get()
             self.remove_dataset(remove_ds)
             self.dataset_queue.put(dataset, block=False)

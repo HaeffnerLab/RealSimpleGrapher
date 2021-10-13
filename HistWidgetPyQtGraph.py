@@ -31,7 +31,7 @@ class Hist_PyQtGraph(QtWidgets.QWidget):
         self.vline_name = config.vline
         self.vline_param = config.vline_param
 
-        self.dataset_queue = Queue.Queue(config.max_datasets)
+        self.dataset_queue = queue.Queue(config.max_datasets)
 
         self.live_update_loop = LoopingCall(self.update_figure)
         self.live_update_loop.start(0)
@@ -167,7 +167,7 @@ class Hist_PyQtGraph(QtWidgets.QWidget):
     def add_dataset(self, dataset):
         try:
             self.dataset_queue.put(dataset, block=False)
-        except Queue.Full:
+        except queue.Full:
             remove_ds = self.dataset_queue.get()
             self.remove_dataset(remove_ds)
             self.dataset_queue.put(dataset, block=False)
