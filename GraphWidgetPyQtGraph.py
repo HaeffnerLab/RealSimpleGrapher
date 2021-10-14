@@ -153,14 +153,19 @@ class Graph_PyQtGraph(QtWidgets.QWidget):
         try:
             artist = self.artists[ident].artist
             self.pw.removeItem(artist)
-            #self.legend.removeItem(ident)
             self.tracelist.removeTrace(ident)
             self.artists[ident].shown = False
+            print('thkim')
+            print(self.artists)
             try:
+                print(ident)
+                print(ident in self.artists)
                 del self.artists[ident]
+                print('finish')
             except KeyError:
+                print('keyerror')
                 pass
-        except:
+        except Exception as e:
             print("remove failed")
 
     def display(self, ident, shown):
@@ -171,7 +176,6 @@ class Graph_PyQtGraph(QtWidgets.QWidget):
                 self.artists[ident].shown = True
             else:
                 self.pw.removeItem(artist)
-                #self.legend.removeItem(ident)
                 self.artists[ident].shown = False
         except KeyError:
             raise Exception('404 Artist not found')

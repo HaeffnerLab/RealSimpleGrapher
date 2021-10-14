@@ -132,7 +132,7 @@ class Hist_PyQtGraph(QtWidgets.QWidget):
                 del self.artists[ident]
             except KeyError:
                 pass
-        except:
+        except Exception as e:
             print("remove failed")
 
     def display(self, ident, shown):

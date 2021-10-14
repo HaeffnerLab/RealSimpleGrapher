@@ -1,15 +1,16 @@
 '''
 The Real Simple Grapher
 '''
+#import GUI elements
 from GraphWindow import GraphWindow
 from Dataset import Dataset
 from PyQt5 import QtWidgets
-import sys
 
+#install qt reactor
+import sys
 a = QtWidgets.QApplication(sys.argv)
 import qt5reactor
 qt5reactor.install()
-
 
 #import server libraries
 from twisted.internet.defer import returnValue, DeferredLock, Deferred, inlineCallbacks
