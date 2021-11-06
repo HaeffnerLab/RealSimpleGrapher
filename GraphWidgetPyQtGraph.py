@@ -155,10 +155,7 @@ class Graph_PyQtGraph(QtWidgets.QWidget):
             self.pw.removeItem(artist)
             self.tracelist.removeTrace(ident)
             self.artists[ident].shown = False
-            try:
-                del self.artists[ident]
-            except KeyError:
-                pass
+            del self.artists[ident]
         except Exception as e:
             print("remove failed")
 
