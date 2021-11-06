@@ -43,7 +43,7 @@ class TraceList(QtWidgets.QListWidget):
         self.trace_dict[ident] = item
 
     def removeTrace(self, ident):
-        item  = self.trace_dict[ident]
+        item = self.trace_dict[ident]
         row = self.row(item)
         self.takeItem(row)
         item = None
