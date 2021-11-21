@@ -30,8 +30,7 @@ class Graph_PyQtGraph(QtWidgets.QWidget):
         from labrad.units import WithUnit as U
         self.U = U
         self.cxn = cxn
-        #todo: undo
-        #self.pv = self.cxn.parametervault
+        self.pv = self.cxn.parameter_vault
         self.reactor = reactor
         self.artists = {}
         self.should_stop = False

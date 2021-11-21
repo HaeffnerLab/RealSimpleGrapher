@@ -13,7 +13,7 @@ from ImageWidget import imageWidget as ImageGraph
 from GridGraphWindow import GridGraphWindow
 
 class GraphWindow(QtWidgets.QTabWidget):
-    def __init__(self, reactor, cxn = None, parent=None):
+    def __init__(self, reactor, cxn=None, parent=None):
         super(GraphWindow, self).__init__(parent)
         self.cxn = cxn
         self.reactor = reactor        

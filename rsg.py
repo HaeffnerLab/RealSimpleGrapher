@@ -4,11 +4,17 @@ The Real Simple Grapher
 #import GUI elements
 from Dataset import Dataset
 from GraphWindow import GraphWindow
-from PyQt5.QtWidgets import QApplications
+from PyQt5.QtWidgets import QApplication
+
+#install qt reactor
+import sys
+app = QApplication(sys.argv)
+import qt5reactor
+qt5reactor.install()
 
 #import server libraries
 from labrad.server import LabradServer, setting
-
+from twisted.internet import reactor
 from twisted.internet.threads import deferToThread
 from twisted.internet.defer import returnValue, DeferredLock, Deferred, inlineCallbacks
 
@@ -29,15 +35,15 @@ timeout = 5
 """
 
 class RealSimpleGrapher(LabradServer):
-    
+
     """ Methods for controlling graphing """
 
-    name = "Real Simple Grapher"
+    name = "Grapher"
 
     @inlineCallbacks
     def initServer(self):
         self.listeners = set()
-        self.gui = GraphWindow(self.reactor, cxn=self.client)
+        self.gui = GraphWindow(reactor, cxn=self.client)
         self.gui.setWindowTitle('Real Simple Grapher')
         self.dv = yield self.client.data_vault
         self.pv = yield self.client.parameter_vault
@@ -58,7 +64,7 @@ class RealSimpleGrapher(LabradServer):
 
     def do_imshow(self, data, image_size, graph, name):
         self.gui.graphDict[graph].update_image(data, image_size, name)
-        
+
     @setting(1, 'Plot', dataset_location = ['(*s, s)', '(*s, i)'], graph='s', send_to_current='b' ,returns='')
     def plot(self, c,  dataset_location, graph, send_to_current = True):
         self.do_plot(dataset_location, graph, send_to_current)
@@ -77,18 +83,6 @@ class RealSimpleGrapher(LabradServer):
         self.do_imshow(image, image_size, graph, name)
 
 if __name__ == '__main__':
-    # create application
-    import sys
-    a = QApplication(sys.argv)
-    # install qt5 rector
-    import qt5reactor
-    qt5reactor.install()
-    # create reactor and initiate server
-    from twisted.internet import reactor
-    server = RealSimpleGrapher(reactor)
-    reactor.run()
-    app.exec_()
-    # run server
     from labrad import util
-    util.runServer(server)
+    util.runServer(RealSimpleGrapher())
 
