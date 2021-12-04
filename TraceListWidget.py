@@ -1,5 +1,7 @@
 #imports
-from PyQt5 import QtGui, QtWidgets, QtCore
+from PyQt5.QtGui import QColor
+from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import QListWidget, QListWidgetItem, QMenu
 
 from FitWindowWidget import FitWindow
 from ParameterListWidget import ParameterList
@@ -8,12 +10,13 @@ from PredictSpectrumWidget import PredictSpectrum
 
 from GUIConfig import traceListConfig
 
-class TraceList(QtWidgets.QListWidget):
+class TraceList(QListWidget):
     """
     Manages the datasets that are being plotted.
     Basically the left-hand column of each GraphWidget.
     """
-    def __init__(self, parent):
+
+    def __init__(self, parent, root=None):
         super(TraceList, self).__init__()
         self.parent = parent
         self.windows = []
@@ -29,14 +32,14 @@ class TraceList(QtWidgets.QListWidget):
 
     def initUI(self):
         self.trace_dict = {}
-        item = QtWidgets.QListWidgetItem('Traces')
-        item.setCheckState(QtCore.Qt.Checked)
-        self.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
+        item = QListWidgetItem('Traces')
+        item.setCheckState(Qt.Checked)
+        self.setContextMenuPolicy(Qt.CustomContextMenu)
         self.customContextMenuRequested.connect(self.popupMenu)
 
 
     def addTrace(self, ident, color):
-        item = QtWidgets.QListWidgetItem(ident)
+        item = QListWidgetItem(ident)
 
         if self.use_trace_color:
             foreground_color = self.parent.getItemColor(color)
@@ -45,7 +48,7 @@ class TraceList(QtWidgets.QListWidget):
             item.setForeground(QtGui.QColor(255, 255, 255))
         item.setBackground(QtGui.QColor(0, 0, 0))
 
-        item.setCheckState(QtCore.Qt.Checked)
+        item.setCheckState(Qt.Checked)
         self.addItem(item)
         self.trace_dict[ident] = item
 
@@ -60,7 +63,7 @@ class TraceList(QtWidgets.QListWidget):
         item.setForeground(self.parent.getItemColor(new_color))
 
     def popupMenu(self, pos):
-        menu = QtWidgets.QMenu()
+        menu = QMenu()
         item = self.itemAt(pos)
         if (item == None): 
             dataaddAction = menu.addAction('Add Data Set')
@@ -68,7 +71,7 @@ class TraceList(QtWidgets.QListWidget):
 
             action = menu.exec_(self.mapToGlobal(pos))
             if action == dataaddAction:
-                dvlist = DataVaultList(self.parent.name)
+                dvlist = DataVaultList(self.parent.name, root=self.root)
                 self.windows.append(dvlist)
                 dvlist.show()
 

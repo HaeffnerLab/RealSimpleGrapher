@@ -1,6 +1,7 @@
+import socket
 from PyQt5 import QtWidgets
 from twisted.internet.defer import inlineCallbacks
-import socket
+
 
 class DataVaultList(QtWidgets.QWidget):
     """
@@ -8,18 +9,20 @@ class DataVaultList(QtWidgets.QWidget):
     Creates a client connection to LabRAD to access the datavault and grapher servers.
     """
 
-    def __init__(self, tracename, parent=None):
+    def __init__(self, tracename, cxn=None, parent=None, root=None):
         super(DataVaultList, self).__init__()
         self.tracename = tracename
+        self.root = root
         self.connect()
 
     @inlineCallbacks
     def connect(self):
-        from labrad.wrappers import connectAsync
-        self.cxn = yield connectAsync(name=socket.gethostname() + ' Data Vault Client')
-        self.grapher = yield self.cxn.real_simple_grapher2
-        self.dv = yield self.cxn.data_vault
-        self.initializeGUI()
+        if not self.cxn:
+            from labrad.wrappers import connectAsync
+            self.cxn = yield connectAsync(name=socket.gethostname() + ' Data Vault Client')
+            self.grapher = yield self.cxn.real_simple_grapher2
+            self.dv = yield self.cxn.data_vault
+            self.initializeGUI()
 
     def initializeGUI(self):
         mainLayout = QtWidgets.QVBoxLayout()

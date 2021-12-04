@@ -1,11 +1,13 @@
 import sys
-from PyQt5 import QtWidgets, QtCore, QtGui
+import queue
+import itertools
+
 import pyqtgraph as pg
 from TraceListWidget import TraceList
-from twisted.internet.defer import inlineCallbacks, returnValue
+from PyQt5 import QtWidgets, QtCore, QtGui
+
 from twisted.internet.task import LoopingCall
-import itertools
-import queue
+from twisted.internet.defer import inlineCallbacks, returnValue
 
 
 class artistParameters():

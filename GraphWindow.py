@@ -4,21 +4,22 @@ Window for holding Graphs.
 import sys
 import GUIConfig
 
-from PyQt5 import QtCore, QtWidgets
+from PyQt5.QtWidgets import QTabWidget, QApplication
 
-from GraphWidgetPyQtGraph import Graph_PyQtGraph as Graph
-from HistWidgetPyQtGraph import Hist_PyQtGraph as Hist
-from ScrollingGraphWidgetPyQtGraph import ScrollingGraph_PyQtGraph as ScrollingGraph
-from ImageWidget import imageWidget as ImageGraph
 from GridGraphWindow import GridGraphWindow
+from ImageWidget import imageWidget as ImageGraph
+from HistWidgetPyQtGraph import Hist_PyQtGraph as Hist
+from GraphWidgetPyQtGraph import Graph_PyQtGraph as Graph
+from ScrollingGraphWidgetPyQtGraph import ScrollingGraph_PyQtGraph as ScrollingGraph
 
-class GraphWindow(QtWidgets.QTabWidget):
+
+class GraphWindow(QTabWidget):
     """
     Creates the RSG GUI. Each tab is a _PyQtGraph object.
     """
 
     def __init__(self, reactor, cxn=None, parent=None):
-        super(GraphWindow, self).__init__(parent)
+        super(GraphWindow, self).__init__()
         self.cxn = cxn
         self.reactor = reactor        
         self.initUI()
@@ -68,7 +69,7 @@ class GraphWindow(QtWidgets.QTabWidget):
 
 
 if __name__ == '__main__':
-    app = QtWidgets.QApplication(sys.argv)
+    app = QApplication(sys.argv)
     import qt5reactor
     qt5reactor.install()
     from twisted.internet import reactor

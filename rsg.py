@@ -1,6 +1,19 @@
-'''
-The Real Simple Grapher
-'''
+"""
+### BEGIN NODE INFO
+[info]
+name =  Real Simple Grapher2
+version = 1.0
+description =
+instancename = Real Simple Grapher2
+[startup]
+cmdline = %PYTHON% %FILE%
+timeout = 20
+[shutdown]
+message = 987654321
+timeout = 5
+### END NODE INFO
+"""
+
 #import GUI elements
 from Dataset import Dataset
 from GraphWindow import GraphWindow
@@ -13,26 +26,11 @@ import qt5reactor
 qt5reactor.install()
 
 #import server libraries
-from labrad.server import LabradServer, setting
+from labrad.server import LabradServer, setting, Signal
 from twisted.internet import reactor
 from twisted.internet.threads import deferToThread
-from twisted.internet.defer import returnValue, DeferredLock, Deferred, inlineCallbacks
+from twisted.internet.defer import returnValue, Deferred, inlineCallbacks
 
-"""
-### BEGIN NODE INFO
-[info]
-name =  Real Simple Grapher2
-version = 1.0
-description = 
-instancename = Real Simple Grapher2
-[startup]
-cmdline = %PYTHON% %FILE%
-timeout = 20
-[shutdown]
-message = 987654321
-timeout = 5
-### END NODE INFO
-"""
 
 class RealSimpleGrapher2(LabradServer):
     """
@@ -41,6 +39,7 @@ class RealSimpleGrapher2(LabradServer):
 
     name = "Real Simple Grapher2"
 
+    # STARTUP
     @inlineCallbacks
     def initServer(self):
         self.listeners = set()
@@ -49,6 +48,22 @@ class RealSimpleGrapher2(LabradServer):
         self.dv = yield self.client.data_vault
         self.pv = yield self.client.parameter_vault
 
+    def initContext(self, c):
+        """Initialize a new context object."""
+        self.listeners.add(c.ID)
+
+    def expireContext(self, c):
+        """Remove a context object."""
+        self.listeners.remove(c.ID)
+
+    def getOtherListeners(self, c):
+        """Get all listeners except for the context owner."""
+        notified = self.listeners.copy()
+        notified.remove(c.ID)
+        return notified
+
+
+    # PLOTTING
     def make_dataset(self, dataset_location):
         cxt = self.client.context()
         ds = Dataset(self.dv, cxt, dataset_location, reactor)

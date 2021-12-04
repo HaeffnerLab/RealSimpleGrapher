@@ -1,45 +1,65 @@
-'''
-The Real Simple Grapher
-'''
+
 #import GUI elements
 from Dataset import Dataset
 from GraphWindow import GraphWindow
-from PyQt5.QtWidgets import QApplication
-
-#install qt reactor
-import sys
-app = QApplication(sys.argv)
-import qt5reactor
-qt5reactor.install()
 
 #import server libraries
-from labrad.server import LabradServer, setting
-from twisted.internet import reactor
 from twisted.internet.threads import deferToThread
-from twisted.internet.defer import returnValue, DeferredLock, Deferred, inlineCallbacks
+from twisted.internet.defer import returnValue, Deferred, inlineCallbacks
 
-"""
-### BEGIN NODE INFO
-[info]
-name =  Real Simple Grapher2
-version = 1.0
-description = 
-instancename = Real Simple Grapher2
-[startup]
-cmdline = %PYTHON% %FILE%
-timeout = 20
-[shutdown]
-message = 987654321
-timeout = 5
-### END NODE INFO
-"""
 
-class RealSimpleGrapher2(LabradServer):
+class RSG_client(object):
     """
-    Methods for controlling graphing.
+    RSG Client
     """
-
     name = "Real Simple Grapher2"
+
+    def __init__(self, reactor, cxn=None, parent=None):
+        super().__init__()
+        self.cxn = cxn
+        self.gui = self
+        self.reactor = reactor
+        self.servers = ['Real Simple Grapher', 'Data Vault', 'Parameter Vault']
+        # initialization sequence
+        d = self.connect()
+        d.addCallback(self.initializeGUI)
+
+    @inlineCallbacks
+    def connect(self):
+        """
+        Creates an asynchronous connection to pump servers
+        and relevant labrad servers
+        """
+        # create labrad connection
+        if not self.cxn:
+            import os
+            LABRADHOST = os.environ['LABRADHOST']
+            from labrad.wrappers import connectAsync
+            self.cxn = yield connectAsync(LABRADHOST, name=self.name)
+
+        # try to get servers
+        try:
+            self.reg = self.cxn.registry
+            self.pv = self.parameter_vault
+            self.dv = self.cxn.data_vault
+            self.rsg = self.cxn.real_simple_grapher
+        except Exception as e:
+            print(e)
+            raise
+
+        # connect to signals
+            #device parameters
+        yield self.tt.signal__pressure_update(self.PRESSUREID)
+        yield self.tt.addListener(listener=self.updatePressure, source=None, ID=self.PRESSUREID)
+        yield self.tt.signal__power_update(self.POWERID)
+        yield self.tt.addListener(listener=self.updatePower, source=None, ID=self.POWERID)
+            #server connections
+        yield self.cxn.manager.subscribe_to_named_message('Server Connect', 9898989, True)
+        yield self.cxn.manager.addListener(listener=self.on_connect, source=None, ID=9898989)
+        yield self.cxn.manager.subscribe_to_named_message('Server Disconnect', 9898989 + 1, True)
+        yield self.cxn.manager.addListener(listener=self.on_disconnect, source=None, ID=9898989 + 1)
+
+        return self.cxn
 
     @inlineCallbacks
     def initServer(self):

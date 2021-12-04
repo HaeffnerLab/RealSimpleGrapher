@@ -1,11 +1,7 @@
 import sys
-from PyQt5 import QtWidgets
 import pyqtgraph as pg
+from PyQt5 import QtWidgets
 from TraceListWidget import TraceList
-from twisted.internet.defer import inlineCallbacks
-from twisted.internet.task import LoopingCall
-import itertools
-import queue
 
 
 class imageWidget(QtWidgets.QWidget):

@@ -1,5 +1,7 @@
+from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import QApplication
 from GraphWidgetPyQtGraph import Graph_PyQtGraph as Graph
-from PyQt5 import QtGui, QtCore, QtWidgets
+
 
 class ScrollingGraph_PyQtGraph(Graph):
     def __init__(self, name, reactor, parent = None, ylim=[0,1], cxn=None):
@@ -20,9 +22,9 @@ class ScrollingGraph_PyQtGraph(Graph):
                 
             
         try:
-            mousepressed = QtWidgets.QApplication.instance().MouseButton
+            mousepressed = QApplication.instance().MouseButton
             #a.mouseButtons()
-            if mousepressed == (QtCore.Qt.LeftButton or QtCore.Qt.RightButton):
+            if mousepressed == (Qt.LeftButton or Qt.RightButton):
                 return
                 # see if we need to redraw
             xmin_cur, xmax_cur = self.current_limits

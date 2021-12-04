@@ -1,6 +1,6 @@
 import sys
 from PyQt5 import QtWidgets
-from twisted.internet.defer import inlineCallbacks, returnValue, DeferredLock, Deferred
+from twisted.internet.defer import inlineCallbacks
 
 class ParameterList(QtWidgets.QWidget):
     

@@ -1,14 +1,13 @@
-from PyQt5 import QtWidgets, QtCore
-from twisted.internet.defer import inlineCallbacks, returnValue, DeferredLock, Deferred
-from fractions import Fraction
-# from labrad import units as U
-# from labrad.units import WithUnit
 import numpy as np
+from fractions import Fraction
 
-class ParamInfo():
+from PyQt5 import QtWidgets
+
+
+class ParamInfo(object):
     '''
     Container for the widgets with
-    each row in the parameters table
+    each row in the parameters table.
     '''
     def __init__(self, value):
         self.value = value

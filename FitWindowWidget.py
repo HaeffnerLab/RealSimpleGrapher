@@ -1,6 +1,6 @@
 from PyQt5 import QtCore, QtWidgets
-from twisted.internet.defer import inlineCallbacks, returnValue, DeferredLock, Deferred
 from analysis.fitting import FitWrapper
+
 
 class RowInfo():
     '''
