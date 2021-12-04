@@ -1,16 +1,24 @@
 '''
-Configuration settings for Grapher GUI
+Configuration settings for the RSG.
 '''
+
 import pyqtgraph as pg
 pg.setConfigOption('background', 'k')
 pg.setConfigOption('foreground', 'y')
 
 class traceListConfig():
-    def __init__(self, background_color = 'black', use_trace_color = False):
+    """
+    Config for the traceList widget. Mostly concerns its color.
+    """
+    def __init__(self, background_color='black', use_trace_color=False):
         self.background_color = background_color
         self.use_trace_color = use_trace_color
 
 class graphConfig():
+    """
+    Config for an individual graph within a GridGraphWindow.
+    Sets graphing-related settings such as axes limits and horizontal/vertical lines.
+    """
     def __init__(self, name, ylim=[0,1], isScrolling=False, max_datasets=20,
                  show_points=True, grid_on=False, scatter_plot='all', isImages=False,
                  isHist=False, line_param=None, vline=None, vline_param=None, hline=None, hline_param=None):
@@ -18,7 +26,7 @@ class graphConfig():
         self.ylim = ylim
         self.isScrolling = isScrolling
         self.max_datasets = max_datasets
-        self.graphs = 1 # just a single graph
+        self.graphs = 1
         self.show_points = show_points
         self.grid_on = grid_on
         self.scatter_plot = scatter_plot
@@ -31,6 +39,10 @@ class graphConfig():
         self.hline_param = hline_param
 
 class gridGraphConfig():
+    """
+    Config for a GridGraphWindow (i.e. a tab).
+    Sets the layout of the graphs on the tab.
+    """
     def __init__(self, tab, config_list):
         self.tab = tab
         self.config_list = config_list[0::3]
@@ -39,6 +51,9 @@ class gridGraphConfig():
         self.graphs = len(self.config_list)
 
 
+"""
+The actual config of the RSG is set here.
+"""
 tabs = [
     gridGraphConfig('Temperature', [graphConfig('Lakeshore 336 Temperature', max_datasets=1), 0, 0]),
     gridGraphConfig('Pressure', [graphConfig('Lakeshore 336 Temperature', max_datasets=1), 0, 0]),
@@ -49,6 +64,5 @@ tabs = [
                       graphConfig('ms_local_stark'), 0, 0,
                       graphConfig('ms_local_stark_detuning'), 1, 0,
                       graphConfig('vaet_local_stark'), 0, 1,
-                      graphConfig('vaet_local_stark_detuning'), 1, 1]),
-
+                      graphConfig('vaet_local_stark_detuning'), 1, 1])
 ]

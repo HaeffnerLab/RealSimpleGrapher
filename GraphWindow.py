@@ -1,5 +1,5 @@
 '''
-Window for holding Graphs
+Window for holding Graphs.
 '''
 import sys
 import GUIConfig
@@ -13,6 +13,10 @@ from ImageWidget import imageWidget as ImageGraph
 from GridGraphWindow import GridGraphWindow
 
 class GraphWindow(QtWidgets.QTabWidget):
+    """
+    Creates the RSG GUI. Each tab is a _PyQtGraph object.
+    """
+
     def __init__(self, reactor, cxn=None, parent=None):
         super(GraphWindow, self).__init__(parent)
         self.cxn = cxn
@@ -53,7 +57,6 @@ class GraphWindow(QtWidgets.QTabWidget):
             self.tabDict[name] = widget
             self.addTab(widget, gc.tab)
             self.setMovable(True)
-            
 
     def insert_tab(self, t):
         g = Graph(t, reactor)
@@ -62,6 +65,7 @@ class GraphWindow(QtWidgets.QTabWidget):
         
     def closeEvent(self, x):
         self.reactor.stop()
+
 
 if __name__ == '__main__':
     app = QtWidgets.QApplication(sys.argv)

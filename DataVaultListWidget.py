@@ -2,8 +2,11 @@ from PyQt5 import QtWidgets
 from twisted.internet.defer import inlineCallbacks
 import socket
 
-
 class DataVaultList(QtWidgets.QWidget):
+    """
+    Data vault pop-up window used to select datasets for plotting.
+    Creates a client connection to LabRAD to access the datavault and grapher servers.
+    """
 
     def __init__(self, tracename, parent=None):
         super(DataVaultList, self).__init__()

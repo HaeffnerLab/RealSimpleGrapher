@@ -1,17 +1,19 @@
-import sys
-from PyQt5 import QtCore, QtWidgets, QtGui
+"""
+A normal graph widget. The "base unit" of the RSG.
+"""
+#imports
 import pyqtgraph as pg
-from TraceListWidget import TraceList
-from twisted.internet.defer import inlineCallbacks, returnValue
-from twisted.internet.task import LoopingCall
-import itertools
-from Dataset import Dataset
-import queue
+from PyQt5 import QtCore, QtWidgets, QtGui
 
-import numpy as np
-from numpy import random
+from twisted.internet.task import LoopingCall
+from twisted.internet.defer import inlineCallbacks, returnValue
+
+from Dataset import Dataset
+from TraceListWidget import TraceList
 
 import sys
+import queue
+import itertools
 
 sys.settrace(None)
 class artistParameters():

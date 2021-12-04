@@ -1,11 +1,18 @@
+#imports
 from PyQt5 import QtGui, QtWidgets, QtCore
+
+from FitWindowWidget import FitWindow
 from ParameterListWidget import ParameterList
 from DataVaultListWidget import DataVaultList
-from FitWindowWidget import FitWindow
 from PredictSpectrumWidget import PredictSpectrum
+
 from GUIConfig import traceListConfig
 
 class TraceList(QtWidgets.QListWidget):
+    """
+    Manages the datasets that are being plotted.
+    Basically the left-hand column of each GraphWidget.
+    """
     def __init__(self, parent):
         super(TraceList, self).__init__()
         self.parent = parent
