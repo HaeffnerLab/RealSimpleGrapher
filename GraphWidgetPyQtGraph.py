@@ -27,7 +27,7 @@ class artistParameters():
                              # update count
 
 class Graph_PyQtGraph(QtWidgets.QWidget):
-    def __init__(self, config, reactor, cxn = None, parent=None):
+    def __init__(self, config, reactor, cxn=None, parent=None):
         super(Graph_PyQtGraph, self).__init__(parent)
         from labrad.units import WithUnit as U
         self.U = U

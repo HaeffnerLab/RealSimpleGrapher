@@ -62,6 +62,7 @@ class RealSimpleGrapher2(LabradServer):
             self.gui.graphDict['current'].add_dataset(ds)
         ds = self.make_dataset(dataset_location)
         self.gui.graphDict[graph].add_dataset(ds)
+        print(self.gui.graphDict[graph])
 
     def do_imshow(self, data, image_size, graph, name):
         self.gui.graphDict[graph].update_image(data, image_size, name)
