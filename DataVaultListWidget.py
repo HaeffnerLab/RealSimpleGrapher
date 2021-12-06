@@ -22,7 +22,11 @@ class DataVaultList(QtWidgets.QWidget):
         if not self.cxn:
             from labrad.wrappers import connectAsync
             self.cxn = yield connectAsync(name=socket.gethostname() + ' Data Vault Client')
-            self.grapher = yield self.cxn.real_simple_grapher
+            try:
+                self.grapher = yield self.cxn.real_simple_grapher
+            except Exception as e:
+                print('RSG Server not connected.')
+                print(e)
             self.dv = yield self.cxn.data_vault
             self.initializeGUI()
 

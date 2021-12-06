@@ -12,13 +12,15 @@ from random import randrange
 
 class RSG_client(object):
     """
-    RSG Client
+    Client for the Real Simple Grapher.
+    Doesn't require the RSG to be running at all.
     """
 
     name = "RSG Client"
 
     def __init__(self, reactor, cxn=None, parent=None):
         super().__init__()
+        # create random client ID
         self.ID = randrange(3e5, 1e6)
         self.cxn = cxn
         # self.gui = GraphWindow(reactor, cxn=self.cxn, root=self)
@@ -47,7 +49,7 @@ class RSG_client(object):
             self.reg = self.cxn.registry
             self.pv = self.cxn.parameter_vault
             self.dv = self.cxn.data_vault
-            self.rsg = self.cxn.real_simple_grapher
+            #self.rsg = self.cxn.real_simple_grapher
         except Exception as e:
             print(e)
             raise
@@ -64,12 +66,9 @@ class RSG_client(object):
         return self.cxn
 
     def initializeGUI(self, cxn):
+        # GUI creation needs to be here since the connection needs to be established
         self.gui = GraphWindow(self.reactor, cxn=self.cxn, root=self)
         self.gui.setWindowTitle('Real Simple Grapher - Client')
-        # connect signals to slots
-        # self.gui.twistorr_lockswitch.toggled.connect(lambda status: self.lock_twistorr(status))
-        # self.gui.twistorr_power.clicked.connect(lambda status: self.toggle_twistorr(status))
-        # self.gui.twistorr_record.toggled.connect(lambda status: self.record_pressure(status))
 
     # SIGNALS
     def on_connect(self, c, message):
@@ -99,7 +98,6 @@ class RSG_client(object):
             self.gui.graphDict['current'].add_dataset(ds)
         ds = self.make_dataset(dataset_location)
         self.gui.graphDict[graph].add_dataset(ds)
-        print(self.gui.graphDict[graph])
 
     def plot_image(self, data, image_size, graph, name):
         self.gui.graphDict[graph].update_image(data, image_size, name)

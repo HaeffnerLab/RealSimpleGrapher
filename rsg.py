@@ -71,8 +71,6 @@ class RealSimpleGrapher(LabradServer):
         return ds
 
     def do_plot(self, dataset_location, graph, send_to_current):
-        print(graph)
-        print(send_to_current)
         if (graph != 'current') and send_to_current:
             # add the plot to the Current tab as well as an additional
             # specified tab for later examination
