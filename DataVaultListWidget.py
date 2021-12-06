@@ -12,6 +12,8 @@ class DataVaultList(QtWidgets.QWidget):
     def __init__(self, tracename, cxn=None, parent=None, root=None):
         super(DataVaultList, self).__init__()
         self.tracename = tracename
+        self.cxn = cxn
+        self.parent = parent
         self.root = root
         self.connect()
 
@@ -20,7 +22,7 @@ class DataVaultList(QtWidgets.QWidget):
         if not self.cxn:
             from labrad.wrappers import connectAsync
             self.cxn = yield connectAsync(name=socket.gethostname() + ' Data Vault Client')
-            self.grapher = yield self.cxn.real_simple_grapher2
+            self.grapher = yield self.cxn.real_simple_grapher
             self.dv = yield self.cxn.data_vault
             self.initializeGUI()
 
@@ -55,7 +57,11 @@ class DataVaultList(QtWidgets.QWidget):
                 self.populate()
             except:
                 path = yield self.dv.cd()
-                yield self.grapher.plot((path, str(item)), self.tracename, False)
+                if root is not None:
+                    # root_ID = self.root.ID
+                    yield self.root.do_plot((path, str(item)), self.tracename, False)
+                else:
+                    yield self.grapher.plot((path, str(item)), self.tracename, False)
 
     def closeEvent(self, event):
         self.cxn.disconnect()

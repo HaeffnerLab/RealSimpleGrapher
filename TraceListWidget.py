@@ -19,6 +19,7 @@ class TraceList(QListWidget):
     def __init__(self, parent, root=None):
         super(TraceList, self).__init__()
         self.parent = parent
+        self.root = root
         self.windows = []
         self.config = traceListConfig()
         self.setStyleSheet("background-color:%s;" % self.config.background_color)

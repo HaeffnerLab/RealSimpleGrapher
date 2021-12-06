@@ -1,10 +1,10 @@
 """
 ### BEGIN NODE INFO
 [info]
-name =  Real Simple Grapher2
+name =  Real Simple Grapher
 version = 1.0
 description =
-instancename = Real Simple Grapher2
+instancename = Real Simple Grapher
 [startup]
 cmdline = %PYTHON% %FILE%
 timeout = 20
@@ -32,19 +32,23 @@ from twisted.internet.threads import deferToThread
 from twisted.internet.defer import returnValue, Deferred, inlineCallbacks
 
 
-class RealSimpleGrapher2(LabradServer):
+class RealSimpleGrapher(LabradServer):
     """
+    RSG Server.
     Methods for controlling graphing.
     """
 
-    name = "Real Simple Grapher2"
+    name = "Real Simple Grapher"
+
+    # SIGNALS
+    plot_client_signal = Signal(999999, 'signal: plot client', '((*s, s), s, b)')
 
     # STARTUP
     @inlineCallbacks
     def initServer(self):
         self.listeners = set()
         self.gui = GraphWindow(reactor, cxn=self.client)
-        self.gui.setWindowTitle('Real Simple Grapher2')
+        self.gui.setWindowTitle('Real Simple Grapher')
         self.dv = yield self.client.data_vault
         self.pv = yield self.client.parameter_vault
 
@@ -83,7 +87,7 @@ class RealSimpleGrapher2(LabradServer):
         self.gui.graphDict[graph].update_image(data, image_size, name)
 
     @setting(1, 'Plot', dataset_location=['(*s, s)', '(*s, i)'], graph='s', send_to_current='b', returns='')
-    def plot(self, c,  dataset_location, graph, send_to_current=True):
+    def plot(self, c, dataset_location, graph, send_to_current=True):
         self.do_plot(dataset_location, graph, send_to_current)
 
     @setting(2, 'Plot with axis', dataset_location=['(*s, s)', '(*s, i)'], graph='s', axis='*v', send_to_current='b', returns='')
@@ -99,8 +103,13 @@ class RealSimpleGrapher2(LabradServer):
     def plot_image(self, c, image, image_size, graph, name=''):
         self.do_imshow(image, image_size, graph, name)
 
+    @setting(4, 'Plot Client', client_ID='i', dataset_location=['(*s, s)', '(*s, i)'], graph='s', send_to_current='b', returns='')
+    def plot_client(self, c, client_ID, dataset_location, graph, send_to_current=True):
+        pass
+        #self.plot_client_signal(dataset_location, graph, send_to_current, (client_ID, ***))
+
 
 if __name__ == '__main__':
     from labrad import util
-    util.runServer(RealSimpleGrapher2())
+    util.runServer(RealSimpleGrapher())
 

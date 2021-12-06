@@ -27,8 +27,9 @@ class artistParameters():
                              # update count
 
 class Graph_PyQtGraph(QtWidgets.QWidget):
-    def __init__(self, config, reactor, cxn=None, parent=None):
+    def __init__(self, config, reactor, cxn=None, parent=None, root=None):
         super(Graph_PyQtGraph, self).__init__(parent)
+        self.root = root
         from labrad.units import WithUnit as U
         self.U = U
         self.cxn = cxn
@@ -56,7 +57,7 @@ class Graph_PyQtGraph(QtWidgets.QWidget):
 
     @inlineCallbacks
     def initUI(self):
-        self.tracelist = TraceList(self)
+        self.tracelist = TraceList(self, root=self.root)
         self.pw = pg.PlotWidget()
         if self.vline_name:
             self.inf = pg.InfiniteLine(movable=True, angle=90,
