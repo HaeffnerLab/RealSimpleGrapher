@@ -40,9 +40,6 @@ class RealSimpleGrapher(LabradServer):
 
     name = "Real Simple Grapher"
 
-    # SIGNALS
-    plot_client_signal = Signal(999999, 'signal: plot client', '((*s, s), s, b)')
-
     # STARTUP
     @inlineCallbacks
     def initServer(self):
@@ -74,6 +71,8 @@ class RealSimpleGrapher(LabradServer):
         return ds
 
     def do_plot(self, dataset_location, graph, send_to_current):
+        print(graph)
+        print(send_to_current)
         if (graph != 'current') and send_to_current:
             # add the plot to the Current tab as well as an additional
             # specified tab for later examination
@@ -81,7 +80,6 @@ class RealSimpleGrapher(LabradServer):
             self.gui.graphDict['current'].add_dataset(ds)
         ds = self.make_dataset(dataset_location)
         self.gui.graphDict[graph].add_dataset(ds)
-        print(self.gui.graphDict[graph])
 
     def do_imshow(self, data, image_size, graph, name):
         self.gui.graphDict[graph].update_image(data, image_size, name)

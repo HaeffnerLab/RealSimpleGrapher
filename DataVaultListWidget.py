@@ -57,7 +57,7 @@ class DataVaultList(QtWidgets.QWidget):
                 self.populate()
             except:
                 path = yield self.dv.cd()
-                if root is not None:
+                if self.root is not None:
                     # root_ID = self.root.ID
                     yield self.root.do_plot((path, str(item)), self.tracename, False)
                 else:

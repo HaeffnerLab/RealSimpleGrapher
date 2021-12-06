@@ -56,7 +56,7 @@ The actual config of the RSG is set here.
 """
 tabs = [
     gridGraphConfig('Temperature', [graphConfig('Lakeshore 336 Temperature', max_datasets=1), 0, 0]),
-    gridGraphConfig('Pressure', [graphConfig('Lakeshore 336 Temperature', max_datasets=1), 0, 0]),
+    gridGraphConfig('Pressure', [graphConfig('Twistorr 74 Pressure', max_datasets=1), 0, 0]),
     gridGraphConfig('SLS', [graphConfig('SLS Locking Output', max_datasets=3), 0, 0]),
     gridGraphConfig('RGA', [graphConfig('RGA Sweeps', max_datasets=3), 0, 0]),
     gridGraphConfig('PMT', [graphConfig('pmt', ylim=[0, 30], isScrolling=True, max_datasets=1, show_points=False), 0, 0]),

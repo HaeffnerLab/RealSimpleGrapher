@@ -180,7 +180,8 @@ class Graph_PyQtGraph(QtWidgets.QWidget):
                     self.display(ident, True)
                 if not item.checkState() and self.artists[ident].shown:
                     self.display(ident, False)
-            except KeyError: # this means the artist has been deleted.
+            # this means the artist has been deleted.
+            except KeyError:
                 pass
 
     def rangeChanged(self):

@@ -46,8 +46,8 @@ class TraceList(QListWidget):
             foreground_color = self.parent.getItemColor(color)
             item.setForeground(foreground_color)
         else:
-            item.setForeground(QtGui.QColor(255, 255, 255))
-        item.setBackground(QtGui.QColor(0, 0, 0))
+            item.setForeground(QColor(255, 255, 255))
+        item.setBackground(QColor(0, 0, 0))
 
         item.setCheckState(Qt.Checked)
         self.addItem(item)

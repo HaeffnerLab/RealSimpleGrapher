@@ -21,8 +21,8 @@ class RSG_client(object):
         super().__init__()
         self.ID = randrange(3e5, 1e6)
         self.cxn = cxn
-        self.gui = GraphWindow(reactor, cxn=self.client, root=self)
-        self.gui.setWindowTitle('Real Simple Grapher')
+        # self.gui = GraphWindow(reactor, cxn=self.cxn, root=self)
+        # self.gui.setWindowTitle('Real Simple Grapher')
         self.reactor = reactor
         self.servers = ['Real Simple Grapher', 'Data Vault', 'Parameter Vault']
         # initialization sequence
@@ -54,8 +54,8 @@ class RSG_client(object):
 
         # connect to signals
             # rsg signal
-        yield self.rsg.signal__plot_update(self.ID)
-        yield self.rsg.addListener(listener=self., source=None, ID=self.ID)
+        #yield self.rsg.signal__plot_update(self.ID)
+        #yield self.rsg.addListener(listener=self., source=None, ID=self.ID)
             # server connections
         yield self.cxn.manager.subscribe_to_named_message('Server Connect', 9898989, True)
         yield self.cxn.manager.addListener(listener=self.on_connect, source=None, ID=9898989)
@@ -64,10 +64,12 @@ class RSG_client(object):
         return self.cxn
 
     def initializeGUI(self, cxn):
+        self.gui = GraphWindow(self.reactor, cxn=self.cxn, root=self)
+        self.gui.setWindowTitle('Real Simple Grapher - Client')
         # connect signals to slots
-        self.gui.twistorr_lockswitch.toggled.connect(lambda status: self.lock_twistorr(status))
-        self.gui.twistorr_power.clicked.connect(lambda status: self.toggle_twistorr(status))
-        self.gui.twistorr_record.toggled.connect(lambda status: self.record_pressure(status))
+        # self.gui.twistorr_lockswitch.toggled.connect(lambda status: self.lock_twistorr(status))
+        # self.gui.twistorr_power.clicked.connect(lambda status: self.toggle_twistorr(status))
+        # self.gui.twistorr_record.toggled.connect(lambda status: self.record_pressure(status))
 
     # SIGNALS
     def on_connect(self, c, message):
@@ -85,7 +87,7 @@ class RSG_client(object):
 
     # PLOTTING
     def make_dataset(self, dataset_location):
-        cxt = self.client.context()
+        cxt = self.cxn.context()
         ds = Dataset(self.dv, cxt, dataset_location, reactor)
         return ds
 
@@ -112,6 +114,15 @@ class RSG_client(object):
 
 
 if __name__ == '__main__':
-    from EGGS_labrad.lib.clients import runClient
-    runClient(RSG_client)
+    # from EGGS_labrad.lib.clients import runClient
+    # runClient(RSG_client)
+    import sys
+    from PyQt5.QtWidgets import QApplication
+    app = QApplication(sys.argv)
+    import qt5reactor
+    qt5reactor.install()
+    from twisted.internet import reactor
+    client = RSG_client(reactor)
+    #sys.exit(app.exec_())
+    reactor.run()
 
