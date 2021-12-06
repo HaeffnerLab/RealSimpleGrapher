@@ -1,4 +1,3 @@
-
 #import GUI elements
 from Dataset import Dataset
 from GraphWindow import GraphWindow
@@ -7,6 +6,7 @@ from GraphWindow import GraphWindow
 from twisted.internet.threads import deferToThread
 from twisted.internet.defer import returnValue, Deferred, inlineCallbacks
 
+import sys
 from random import randrange
 
 
@@ -112,9 +112,6 @@ class RSG_client(object):
 
 
 if __name__ == '__main__':
-    # from EGGS_labrad.lib.clients import runClient
-    # runClient(RSG_client)
-    import sys
     from PyQt5.QtWidgets import QApplication
     app = QApplication(sys.argv)
     import qt5reactor

@@ -82,8 +82,6 @@ class GraphWindow(QTabWidget):
 
 
 if __name__ == '__main__':
-    # from EGGS_labrad.lib.clients import runClient
-    # runClient(GraphWindow)
     app = QApplication(sys.argv)
     import qt5reactor
     qt5reactor.install()
