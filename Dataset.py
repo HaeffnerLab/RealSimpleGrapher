@@ -1,12 +1,12 @@
 '''
 Parent class for datasets
 '''
-from twisted.internet.defer import inlineCallbacks, returnValue, DeferredLock, Deferred
-from PyQt5 import QtCore
-from twisted.internet.threads import deferToThread
 import numpy as np
+from PyQt5.QtCore import QObject
+from twisted.internet.defer import inlineCallbacks, returnValue, DeferredLock
 
-class Dataset(QtCore.QObject):
+
+class Dataset(QObject):
     
     def __init__(self, data_vault, context, dataset_location,reactor):
         super(Dataset, self).__init__()

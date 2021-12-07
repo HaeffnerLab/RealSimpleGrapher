@@ -1,17 +1,19 @@
-import sys
-from PyQt5 import QtCore, QtWidgets, QtGui
+"""
+A normal graph widget. The "base unit" of the RSG.
+"""
+#imports
 import pyqtgraph as pg
-from TraceListWidget import TraceList
-from twisted.internet.defer import inlineCallbacks, returnValue
-from twisted.internet.task import LoopingCall
-import itertools
-from Dataset import Dataset
-import queue
+from PyQt5 import QtCore, QtWidgets, QtGui
 
-import numpy as np
-from numpy import random
+from twisted.internet.task import LoopingCall
+from twisted.internet.defer import inlineCallbacks, returnValue
+
+from Dataset import Dataset
+from TraceListWidget import TraceList
 
 import sys
+import queue
+import itertools
 
 sys.settrace(None)
 class artistParameters():
@@ -25,13 +27,13 @@ class artistParameters():
                              # update count
 
 class Graph_PyQtGraph(QtWidgets.QWidget):
-    def __init__(self, config, reactor, cxn = None, parent=None):
+    def __init__(self, config, reactor, cxn=None, parent=None, root=None):
         super(Graph_PyQtGraph, self).__init__(parent)
+        self.root = root
         from labrad.units import WithUnit as U
         self.U = U
         self.cxn = cxn
-        #todo: undo
-        #self.pv = self.cxn.parametervault
+        self.pv = self.cxn.parameter_vault
         self.reactor = reactor
         self.artists = {}
         self.should_stop = False
@@ -55,7 +57,7 @@ class Graph_PyQtGraph(QtWidgets.QWidget):
 
     @inlineCallbacks
     def initUI(self):
-        self.tracelist = TraceList(self)
+        self.tracelist = TraceList(self, root=self.root)
         self.pw = pg.PlotWidget()
         if self.vline_name:
             self.inf = pg.InfiniteLine(movable=True, angle=90,
@@ -178,7 +180,8 @@ class Graph_PyQtGraph(QtWidgets.QWidget):
                     self.display(ident, True)
                 if not item.checkState() and self.artists[ident].shown:
                     self.display(ident, False)
-            except KeyError: # this means the artist has been deleted.
+            # this means the artist has been deleted.
+            except KeyError:
                 pass
 
     def rangeChanged(self):
