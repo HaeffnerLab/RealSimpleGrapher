@@ -1,12 +1,12 @@
 '''
 Parent class for datasets
 '''
-from twisted.internet.defer import inlineCallbacks, returnValue, DeferredLock, Deferred
-from PyQt4 import QtCore
-from twisted.internet.threads import deferToThread
 import numpy as np
+from PyQt5.QtCore import QObject
+from twisted.internet.defer import inlineCallbacks, returnValue, DeferredLock
 
-class Dataset(QtCore.QObject):
+
+class Dataset(QObject):
     
     def __init__(self, data_vault, context, dataset_location,reactor):
         super(Dataset, self).__init__()
@@ -72,9 +72,12 @@ class Dataset(QtCore.QObject):
     def getLabels(self):
         labels = []
         yield self.openDataset()
-        variables = yield self.data_vault.variables(context = self.context)
-        for i in range(len(variables[1])):
-            labels.append(variables[1][i][1] + ' - ' + self.dataset_name)
+        _, all_dep = yield self.data_vault.variables(context = self.context)
+        for i in range(len(all_dep)):
+            label_tmp = all_dep[i][0] + ' - ' + self.dataset_name
+            if label_tmp in labels:
+                label_tmp += ' (' + str(i) + ')'
+            labels.append(label_tmp)
         returnValue(labels)
 
     @inlineCallbacks

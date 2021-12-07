@@ -1,16 +1,17 @@
 import sys
-from PyQt4 import QtGui, QtCore
-from twisted.internet.defer import inlineCallbacks, returnValue, DeferredLock, Deferred
+from PyQt5 import QtWidgets
+from twisted.internet.defer import inlineCallbacks
 
-class ParameterList(QtGui.QWidget):
-    
+
+class ParameterList(QtWidgets.QWidget):
+
     def __init__(self, dataset):
         super(ParameterList, self).__init__()
         self.dataset = dataset
-        mainLayout = QtGui.QVBoxLayout() 
-        self.parameterListWidget = QtGui.QListWidget()
-        mainLayout.addWidget(self.parameterListWidget)        
-        self.setWindowTitle(str(dataset.dataset_name))# + " " + str(dataset.directory))
+        mainLayout = QtWidgets.QVBoxLayout()
+        self.parameterListWidget = QtWidgets.QListWidget()
+        mainLayout.addWidget(self.parameterListWidget)
+        self.setWindowTitle(str(dataset.dataset_name))  # + " " + str(dataset.directory))
         self.populate()
         self.setLayout(mainLayout)
         self.show()

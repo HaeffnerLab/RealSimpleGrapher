@@ -1,11 +1,13 @@
 import sys
-from PyQt4 import QtGui, QtCore
+import queue
+import itertools
+
 import pyqtgraph as pg
 from TraceListWidget import TraceList
-from twisted.internet.defer import inlineCallbacks, returnValue
+from PyQt5 import QtWidgets, QtCore, QtGui
+
 from twisted.internet.task import LoopingCall
-import itertools
-import Queue
+from twisted.internet.defer import inlineCallbacks, returnValue
 
 
 class artistParameters():
@@ -15,11 +17,11 @@ class artistParameters():
         self.index = index
         self.shown = shown
         self.last_update = 0  # update counter in the Dataset object
-                              # only redraw if the dataset has a higher
-                              # update count
+        # only redraw if the dataset has a higher
+        # update count
 
-                              
-class Hist_PyQtGraph(QtGui.QWidget):
+
+class Hist_PyQtGraph(QtWidgets.QWidget):
     def __init__(self, config, reactor, cxn=None, parent=None):
         super(Hist_PyQtGraph, self).__init__(parent)
         self.cxn = cxn
@@ -31,7 +33,7 @@ class Hist_PyQtGraph(QtGui.QWidget):
         self.vline_name = config.vline
         self.vline_param = config.vline_param
 
-        self.dataset_queue = Queue.Queue(config.max_datasets)
+        self.dataset_queue = queue.Queue(config.max_datasets)
 
         self.live_update_loop = LoopingCall(self.update_figure)
         self.live_update_loop.start(0)
@@ -59,13 +61,13 @@ class Hist_PyQtGraph(QtGui.QWidget):
             init_value = yield self.get_init_vline()
             self.inf.setValue(init_value)
             self.inf.setPen(width=5.0)
-        self.coords = QtGui.QLabel('')
-        self.title = QtGui.QLabel(self.name)
-        frame = QtGui.QFrame()
-        splitter = QtGui.QSplitter()
+        self.coords = QtWidgets.QLabel('')
+        self.title = QtWidgets.QLabel(self.name)
+        frame = QtWidgets.QFrame()
+        splitter = QtWidgets.QSplitter()
         splitter.addWidget(self.tracelist)
-        hbox = QtGui.QHBoxLayout()
-        vbox = QtGui.QVBoxLayout()
+        hbox = QtWidgets.QHBoxLayout()
+        vbox = QtWidgets.QVBoxLayout()
         vbox.addWidget(self.title)
         vbox.addWidget(self.pw)
         vbox.addWidget(self.coords)
@@ -73,9 +75,9 @@ class Hist_PyQtGraph(QtGui.QWidget):
         splitter.addWidget(frame)
         hbox.addWidget(splitter)
         self.setLayout(hbox)
-        #self.legend = self.pw.addLegend()
+        # self.legend = self.pw.addLegend()
         self.tracelist.itemChanged.connect(self.checkboxChanged)
-        self.pw.plot([],[])
+        self.pw.plot([], [])
         vb = self.pw.plotItem.vb
         self.img = pg.ImageItem()
         vb.addItem(self.img)
@@ -95,29 +97,30 @@ class Hist_PyQtGraph(QtGui.QWidget):
                       (255, 0, 255, 80): QtGui.QColor(QtCore.Qt.magenta).lighter(120),
                       (255, 255, 255, 80): QtGui.QColor(QtCore.Qt.white)}
         return color_dict[color]
-        
+
     def update_figure(self):
-        for ident, params in self.artists.iteritems():
+        for ident, params in self.artists.items():
             if params.shown:
                 try:
                     ds = params.dataset
                     index = params.index
                     current_update = ds.updateCounter
                     if params.last_update < current_update:
-                        x = ds.data[:,0]
+                        x = ds.data[:, 0]
                         x = list(x) + [x[-1] + 1]
-                        y = ds.data[:,index+1]
+                        y = ds.data[:, index + 1]
                         params.last_update = current_update
-                        params.artist.setData(x,y)
-                except: pass
+                        params.artist.setData(x, y)
+                except:
+                    pass
 
-    def add_artist(self, ident, dataset, index, no_points = False):
+    def add_artist(self, ident, dataset, index, no_points=False):
         '''
         no_points is an override parameter to the global show_points setting.
         It is to allow data fits to be plotted without points
         '''
         new_color = self.colorChooser.next()
-        hist = pg.PlotCurveItem([0,1],[1], stepMode=True, fillLevel=0, brush=new_color, pen=None)
+        hist = pg.PlotCurveItem([0, 1], [1], stepMode=True, fillLevel=0, brush=new_color, pen=None)
         self.artists[ident] = artistParameters(hist, dataset, index, True)
         self.pw.addItem(hist)
         self.tracelist.addTrace(ident, new_color)
@@ -132,8 +135,8 @@ class Hist_PyQtGraph(QtGui.QWidget):
                 del self.artists[ident]
             except KeyError:
                 pass
-        except:
-            print "remove failed"
+        except Exception as e:
+            print("remove failed")
 
     def display(self, ident, shown):
         try:
@@ -148,7 +151,7 @@ class Hist_PyQtGraph(QtGui.QWidget):
             raise Exception('404 Artist not found')
 
     def checkboxChanged(self):
-        for ident, item in self.tracelist.trace_dict.iteritems():
+        for ident, item in self.tracelist.trace_dict.items():
             try:
                 if item.checkState() and not self.artists[ident].shown:
                     self.display(ident, True)
@@ -167,7 +170,7 @@ class Hist_PyQtGraph(QtGui.QWidget):
     def add_dataset(self, dataset):
         try:
             self.dataset_queue.put(dataset, block=False)
-        except Queue.Full:
+        except queue.Full:
             remove_ds = self.dataset_queue.get()
             self.remove_dataset(remove_ds)
             self.dataset_queue.put(dataset, block=False)
@@ -197,7 +200,7 @@ class Hist_PyQtGraph(QtGui.QWidget):
     def get_init_vline(self):
         init_vline = yield self.pv.get_parameter(self.vline_param[0],
                                                  self.vline_param[1])
-        print init_vline
+        print(init_vline)
         returnValue(init_vline)
 
     @inlineCallbacks
@@ -209,10 +212,12 @@ class Hist_PyQtGraph(QtGui.QWidget):
 
 
 if __name__ == '__main__':
-    app = QtGui.QApplication(sys.argv)
-    import qt4reactor
-    qt4reactor.install()
+    app = QtWidgets.QApplication(sys.argv)
+    import qt5reactor
+
+    qt5reactor.install()
     from twisted.internet import reactor
+
     main = Hist_PyQtGraph('example', reactor)
     main.show()
     reactor.run()
