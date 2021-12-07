@@ -1,19 +1,22 @@
 '''
 The Real Simple Grapher
 '''
-
+#import GUI elements
 from GraphWindow import GraphWindow
 from Dataset import Dataset
-from PyQt4 import QtGui
-a = QtGui.QApplication( [])
-import qt4reactor
-qt4reactor.install()
+from PyQt5 import QtWidgets
+
+#install qt reactor
+import sys
+a = QtWidgets.QApplication(sys.argv)
+import qt5reactor
+qt5reactor.install()
+
 #import server libraries
 from twisted.internet.defer import returnValue, DeferredLock, Deferred, inlineCallbacks
 from twisted.internet.threads import deferToThread
 from twisted.internet import reactor
 from labrad.server import LabradServer, setting
-
 
 """
 ### BEGIN NODE INFO
@@ -43,7 +46,7 @@ class RealSimpleGrapher(LabradServer):
         self.gui = GraphWindow(reactor, cxn = self.client)
         self.gui.setWindowTitle('Real Simple Grapher')
         self.dv = yield self.client.data_vault
-        self.pv = yield self.client.parametervault
+        self.pv = yield self.client.parameter_vault
 
     def make_dataset(self, dataset_location):
         cxt = self.client.context()
