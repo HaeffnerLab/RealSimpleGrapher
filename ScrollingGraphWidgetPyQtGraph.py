@@ -1,5 +1,5 @@
 from GraphWidgetPyQtGraph import Graph_PyQtGraph as Graph
-from PyQt4 import QtGui, QtCore
+from PyQt5 import QtGui, QtCore, QtWidgets
 
 class ScrollingGraph_PyQtGraph(Graph):
     def __init__(self, name, reactor, parent = None, ylim=[0,1], cxn=None):
@@ -8,7 +8,7 @@ class ScrollingGraph_PyQtGraph(Graph):
         self.pointsToKeep = 100
 
     def update_figure(self, _input = None):
-        for ident, params in self.artists.iteritems():
+        for ident, params in self.artists.items():
             if params.shown:
                 try:
                     index = params.index
@@ -20,9 +20,10 @@ class ScrollingGraph_PyQtGraph(Graph):
                 
             
         try:
-    	    mousepressed =  QtGui.qApp.mouseButtons()
-    	    if (mousepressed == QtCore.Qt.LeftButton) or (mousepressed == QtCore.Qt.RightButton):
-                return 
+            mousepressed = QtWidgets.QApplication.instance().MouseButton
+            #a.mouseButtons()
+            if mousepressed == (QtCore.Qt.LeftButton or QtCore.Qt.RightButton):
+                return
                 # see if we need to redraw
             xmin_cur, xmax_cur = self.current_limits
             x_cur = x[-1] # current largest x value
