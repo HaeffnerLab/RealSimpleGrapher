@@ -7,7 +7,7 @@ from twisted.internet.threads import deferToThread
 import numpy as np
 
 class Dataset(QtCore.QObject):
-    
+
     def __init__(self, data_vault, context, dataset_location,reactor):
         super(Dataset, self).__init__()
         self.data = None
@@ -17,6 +17,10 @@ class Dataset(QtCore.QObject):
         self.data_vault = data_vault
         self.updateCounter = 0
         self.context = context
+        # dataset storage variables
+        self.points_per_grab = 1000
+        self.last_index = 0
+        # startup sequence
         self.connectDataVault()
         self.setupListeners()
 
@@ -52,21 +56,28 @@ class Dataset(QtCore.QObject):
 
     @inlineCallbacks
     def getData(self):
-        Data = yield self.data_vault.get(100, context = self.context)
-        if (self.data is None):
-            yield self.accessingData.acquire()
-            try:
-                self.data = Data.asarray
-            except:
-                self.data = Data
-            self.accessingData.release()
+        """
+        Gets data in bunches at a time and adds
+        them to self.data, which holds the dataset.
+        """
+        # acquire communication
+        yield self.accessingData.acquire()
+        # get data from the datavault
+        Data = yield self.data_vault.get(self.points_per_grab, context=self.context)
+        Data = np.array(Data)
+        rows = np.shape(Data)[0]
+        # add data to dataset
+        if self.data is not None:
+            self.data[self.last_index: self.last_index + rows] = Data
+            self.last_index += rows
+        # create new dataset
         else:
-            yield self.accessingData.acquire()
-            try:
-                self.data = np.append(self.data, Data.asarray, 0)
-            except:
-                self.data = np.append(self.data, Data, 0)
-            self.accessingData.release()
+            dataset_shape = yield self.data_vault.shape(context=self.context)
+            self.data = np.zeros(dataset_shape)
+            self.data[self.last_index: self.last_index + rows] = Data
+            self.last_index += rows
+        # release communication
+        self.accessingData.release()
 
     @inlineCallbacks
     def getLabels(self):
