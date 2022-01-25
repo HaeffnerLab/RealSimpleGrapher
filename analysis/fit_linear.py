@@ -1,6 +1,6 @@
 # Fitter class for linear fits
 
-from model import Model, ParameterInfo
+from .model import Model, ParameterInfo
 import numpy as np
 
 class Linear(Model):
