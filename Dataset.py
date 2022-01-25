@@ -1,56 +1,84 @@
-'''
-Parent class for datasets
-'''
-from twisted.internet.defer import inlineCallbacks, returnValue, DeferredLock, Deferred
-from PyQt5 import QtCore
-from twisted.internet.threads import deferToThread
 import numpy as np
+from PyQt5.QtCore import QObject
+from twisted.internet.defer import inlineCallbacks, returnValue, DeferredLock
 
-class Dataset(QtCore.QObject):
 
-    def __init__(self, data_vault, context, dataset_location,reactor):
+class Dataset(QObject):
+    '''
+    Parent class for datasets.
+    '''
+
+    def __init__(self, data_vault, context, dataset_location, reactor):
         super(Dataset, self).__init__()
-        self.data = None
         self.accessingData = DeferredLock()
         self.reactor = reactor
+        self.context = context
+
+        # dataset storage variables
         self.dataset_location = dataset_location
         self.data_vault = data_vault
-        self.updateCounter = 0
-        self.context = context
-        # dataset storage variables
+        self.data = None
         self.points_per_grab = 1000
         self.last_index = 0
+        self.updateCounter = 0
+        
         # startup sequence
         self.connectDataVault()
+        self.openDataset()
         self.setupListeners()
 
+
+    # SETUP CONNECTION
     @inlineCallbacks
     def connectDataVault(self):
-        yield self.data_vault.cd(self.dataset_location[0], context = self.context)
-        path, dataset_name = yield self.data_vault.open(self.dataset_location[1], context = self.context)
-        self.dataset_name = dataset_name
+        yield self.accessingData.acquire()
+        yield self.data_vault.cd(self.dataset_location[0], context=self.context)
+        _, self.dataset_name = yield self.data_vault.open(self.dataset_location[1], context=self.context)
+    
+    @inlineCallbacks
+    def openDataset(self):
+        # open the dataset
+        yield self.data_vault.cd(self.dataset_location[0], context=self.context)
+        yield self.data_vault.open(self.dataset_location[1], context=self.context)
+        # allocate array size based on dataset size
+        dataset_shape = yield self.data_vault.shape(context=self.context)
+        self.data = np.zeros(dataset_shape)
+        self.accessingData.release()
 
     @inlineCallbacks
     def setupListeners(self):
-        yield self.data_vault.signal__data_available(11111, context = self.context)
-        yield self.data_vault.addListener(listener = self.updateData, source = None, ID = 11111, context = self.context)
-
+        yield self.data_vault.signal__data_available(11111, context=self.context)
+        yield self.data_vault.addListener(listener=self.updateData, source=None, ID=11111, context=self.context)
 
     @inlineCallbacks
-    def openDataset(self):
-        yield self.data_vault.cd(self.dataset_location[0], context = self.context)
-        yield self.data_vault.open(self.dataset_location[1], context = self.context)
+    def disconnectDataSignal(self):
+        yield self.data_vault.removeListener(listener=self.updateData, source=None, ID=11111, context=self.context)
 
+
+    # GETTERS
     @inlineCallbacks
     def getParameters(self):
-        parameters = yield self.data_vault.parameters(context = self.context)
+        parameters = yield self.data_vault.parameters(context=self.context)
         parameterValues = []
         for parameter in parameters:
-            parameterValue = yield self.data_vault.get_parameter(parameter, context = self.context)
-            parameterValues.append( (parameter, parameterValue) )
+            parameterValue = yield self.data_vault.get_parameter(parameter, context=self.context)
+            parameterValues.append((parameter, parameterValue))
         returnValue(parameterValues)
 
-    def updateData(self,x,y):
+    @inlineCallbacks
+    def getLabels(self):
+        yield self.accessingData.acquire()
+        labels = []
+        _, all_dep = yield self.data_vault.variables(context=self.context)
+        for i in range(len(all_dep)):
+            label_tmp = all_dep[i][0] + ' - ' + self.dataset_name
+            if label_tmp in labels:
+                label_tmp += ' (' + str(i) + ')'
+            labels.append(label_tmp)
+        self.accessingData.release()
+        returnValue(labels)
+
+    def updateData(self, c, msg):
         self.updateCounter += 1
         self.getData()
 
@@ -65,29 +93,13 @@ class Dataset(QtCore.QObject):
         # get data from the datavault
         Data = yield self.data_vault.get(self.points_per_grab, context=self.context)
         Data = np.array(Data)
-        rows = np.shape(Data)[0]
-        # add data to dataset
-        if self.data is not None:
-            self.data[self.last_index: self.last_index + rows] = Data
-            self.last_index += rows
-        # create new dataset
+        next_index = self.last_index + np.shape(Data)[0]
+        # add to array if we have the space
+        if next_index <= np.shape(self.data)[0]:
+            self.data[self.last_index: next_index] = Data
+        # otherwise append to array
         else:
-            dataset_shape = yield self.data_vault.shape(context=self.context)
-            self.data = np.zeros(dataset_shape)
-            self.data[self.last_index: self.last_index + rows] = Data
-            self.last_index += rows
+            self.data = np.append(self.data, Data, axis=0)
+        self.last_index = next_index
         # release communication
         self.accessingData.release()
-
-    @inlineCallbacks
-    def getLabels(self):
-        labels = []
-        yield self.openDataset()
-        variables = yield self.data_vault.variables(context = self.context)
-        for i in range(len(variables[1])):
-            labels.append(variables[1][i][1] + ' - ' + self.dataset_name)
-        returnValue(labels)
-
-    @inlineCallbacks
-    def disconnectDataSignal(self):
-        yield self.data_vault.removeListener(listener = self.updateData, source = None, ID = 11111, context = self.context)
