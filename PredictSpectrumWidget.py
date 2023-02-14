@@ -139,7 +139,7 @@ class PredictSpectrum(QtGui.QWidget):
                     micro_lines.append((freq-drive_freq,0.5+order))
                 all_lines.extend(micro_lines)
 
-            freqs = np.arange(-50,50,0.005)
+            freqs = np.arange(line_center-30, line_center+30, 0.002)
             spec = np.zeros_like(freqs)
             for line in all_lines:
                 spec = np.add(spec,self.make_gaussian(line[0],freqs,line[1]))
@@ -170,9 +170,9 @@ class PredictSpectrum(QtGui.QWidget):
         try:
             # remove the previous plot
             self.parent.parent.remove_artist(self.ident)
-            self.parent.parent.add_artist(self.ident, ds, 0, no_points = False)
+            self.parent.parent.add_artist(self.ident, ds, 0, no_points = True)
         except:
-            self.parent.parent.add_artist(self.ident, ds, 0, no_points = False)
+            self.parent.parent.add_artist(self.ident, ds, 0, no_points = True)
 
 
     def closeEvent(self, event):

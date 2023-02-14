@@ -15,30 +15,33 @@ class Rabi(Model):
             'eta':ParameterInfo('eta', 2, lambda x, y: 0.05, vary=False),
             'delta': ParameterInfo('delta', 3, lambda x,y: 0, vary=False),
             'sideband_order': ParameterInfo('sideband_order', 4, lambda x, y: 0, vary = False),
-            'excitation_scaling': ParameterInfo('excitation_scaling', 5, lambda x,y: 1.0, vary = False)
+            'excitation_scaling': ParameterInfo('excitation_scaling', 5, lambda x,y: 1.0, vary = False),
+            'turnon_delay': ParameterInfo('turnon_delay', 6, lambda x,y: 0, vary = False)
             }
 
     def model(self, x, p):
+
         omega_rabi = p[0]
         nbar = p[1]
         eta = p[2]
         delta = p[3]
         sideband_order = p[4]
         excitation_scaling = p[5]
+        turnon_delay = p[6]
         
         nmax = 1000
 
         omega = rc.compute_rabi_coupling(eta, sideband_order, nmax)
         ones = np.ones_like(x)
         p_n = md.thermal(nbar, nmax)
-        # if 1 - p_n.sum() > 1e-6:
-        #     raise Exception ('Hilbert space too small, missing population')
+        if 1 - p_n.sum() > 1e-6:
+            raise Exception ('Hilbert space too small, missing population')
         if delta == 0:
             #prevents division by zero if delta == 0, omega == 0
             effective_omega = 1.
         else:
             effective_omega = omega/np.sqrt(omega**2+delta**2)
-        result = np.outer(p_n * effective_omega, ones) * (np.sin( np.outer( np.sqrt(omega**2+delta**2)*omega_rabi/2, x ))**2)
+        result = np.outer(p_n * effective_omega, ones) * (np.sin( np.outer( np.sqrt(omega**2+delta**2)*omega_rabi/2, [(t if t>=0 else 0) for t in x-turnon_delay] ))**2)
         result = np.sum(result, axis = 0)
         result = excitation_scaling * result
         return result

@@ -14,10 +14,10 @@ class RotRamsey(Model):
         self.parameters = {
             'omega_rabi': ParameterInfo('f_rabi', 0, lambda x, y: 0.01, vary=True),
             'stdev_l': ParameterInfo('stdev_l', 1, lambda x, y: 50.0, vary=True),
-            'sideband_order': ParameterInfo('sideband_order', 2, lambda x, y: 4, vary = False),
-            'f_trap': ParameterInfo('f_trap', 3, lambda x, y: 0.845, vary=False),
+            'sideband_order': ParameterInfo('sideband_order', 2, lambda x, y: 1, vary = False),
+            'f_trap': ParameterInfo('f_trap', 3, lambda x, y: 1.5, vary=False),
             'f_rot': ParameterInfo('f_rot', 4, lambda x, y: 0.1, vary=False),
-            'delta': ParameterInfo('delta', 5, lambda x, y: 0, vary=False),
+            'delta': ParameterInfo('delta', 5, lambda x, y: 5, vary=False),
             'scale': ParameterInfo('scale,', 6, lambda x, y: 1.0, vary=False)
             }
 

@@ -24,7 +24,12 @@ class Dataset(QtCore.QObject):
     def connectDataVault(self):
         yield self.data_vault.cd(self.dataset_location[0], context = self.context)
         path, dataset_name = yield self.data_vault.open(self.dataset_location[1], context = self.context)
-        self.dataset_name = dataset_name
+        if len(path) < 3:
+            self.dataset_name = dataset_name
+        else:
+            date = path[2]
+            num, time = dataset_name.split(' - ')
+            self.dataset_name = date + ' - ' + time + ' - ' + num
 
     @inlineCallbacks
     def setupListeners(self):

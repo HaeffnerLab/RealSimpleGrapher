@@ -12,13 +12,14 @@ from fit_rotramsey import RotRamsey
 from fit_sinusoid import Sinusoid
 from fit_sinusoid2 import Sinusoid2
 from fit_expdecay import ExponentialDecay
+from fit_exp3decay import Exponential3Decay
 from fit_gaussdecay import GaussianDecay
 from fit_ramsey import RamseyDecay
 from fit_ramseybfield import RamseyBfield
 
 class FitWrapper():
 
-    models = ['Lorentzian', 'Gaussian', 'Rabi', 'RotRabi', 'RotRamsey', 'Linear', 'Bessel', 'Sinusoid', 'Sinusoid2', 'ExponentialDecay', 'GaussianDecay', 'RamseyDecay','RamseyBfield']
+    models = ['Lorentzian', 'Gaussian', 'Rabi', 'RotRabi', 'RotRamsey', 'Linear', 'Bessel', 'Sinusoid', 'Sinusoid2', 'ExponentialDecay', 'Exponential3Decay', 'GaussianDecay', 'RamseyDecay','RamseyBfield']
 
     def __init__(self, dataset, index):
         self.dataset = dataset
@@ -37,6 +38,7 @@ class FitWrapper():
             'Sinusoid': Sinusoid,
             'Sinusoid2': Sinusoid2,
             'ExponentialDecay': ExponentialDecay,
+            'Exponential3Decay': Exponential3Decay,
             'GaussianDecay': GaussianDecay,
             'RamseyDecay': RamseyDecay,
             'RamseyBfield': RamseyBfield
