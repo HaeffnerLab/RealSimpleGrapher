@@ -1,6 +1,8 @@
-from PyQt4 import QtGui, QtCore
+from PyQt5 import QtCore, QtGui, QtWidgets
 from twisted.internet.defer import inlineCallbacks, returnValue, DeferredLock, Deferred
 from .analysis.fitting import FitWrapper
+
+QStringList = list
 
 class RowInfo():
     '''
@@ -12,7 +14,7 @@ class RowInfo():
         self.manual_value = manual_value
         self.fitted_value = fitted_value
 
-class FitWindow(QtGui.QWidget):
+class FitWindow(QtWidgets.QWidget):
 
     def __init__(self, dataset, index, parent):
         super(FitWindow, self).__init__()
@@ -26,19 +28,19 @@ class FitWindow(QtGui.QWidget):
 
     def initUI(self):
         self.setWindowTitle(self.ident)
-        mainLayout = QtGui.QVBoxLayout()
-        buttons = QtGui.QHBoxLayout()
+        mainLayout = QtWidgets.QVBoxLayout()
+        buttons = QtWidgets.QHBoxLayout()
 
-        self.model_select = QtGui.QComboBox(self)
+        self.model_select = QtWidgets.QComboBox(self)
         for model in self.fw.models:
             self.model_select.addItem(model)
 
-        self.parameterTable = QtGui.QTableWidget()
+        self.parameterTable = QtWidgets.QTableWidget()
         self.parameterTable.setColumnCount(4)
 
-        self.fitButton = QtGui.QPushButton('Fit', self)
+        self.fitButton = QtWidgets.QPushButton('Fit', self)
 
-        self.plotButton = QtGui.QPushButton('Plot manual', self)
+        self.plotButton = QtWidgets.QPushButton('Plot manual', self)
 
         self.fw.setModel(str(self.model_select.currentText()))
 
@@ -60,7 +62,7 @@ class FitWindow(QtGui.QWidget):
 
         self.parameterTable.clear()
         
-        headerLabels = QtCore.QStringList(['Vary', 'Param', 'Manual', 'Fitted'])
+        headerLabels = QStringList(['Vary', 'Param', 'Manual', 'Fitted'])
         self.parameterTable.setHorizontalHeaderLabels(headerLabels)
         self.parameterTable.horizontalHeader().setStretchLastSection(True)
 
@@ -68,10 +70,10 @@ class FitWindow(QtGui.QWidget):
         self.parameterTable.setRowCount(len(params))
         for i,p in enumerate(params):
 
-            vary_select = QtGui.QTableWidgetItem()
-            label = QtGui.QLabel(p)
-            manual_value = QtGui.QDoubleSpinBox()
-            fitted_value = QtGui.QTableWidgetItem()
+            vary_select = QtWidgets.QTableWidgetItem()
+            label = QtWidgets.QLabel(p)
+            manual_value = QtWidgets.QDoubleSpinBox()
+            fitted_value = QtWidgets.QTableWidgetItem()
 
             self.row_info_dict[p] = RowInfo(vary_select, manual_value, fitted_value)
 

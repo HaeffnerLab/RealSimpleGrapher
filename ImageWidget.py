@@ -1,5 +1,5 @@
 import sys
-from PyQt4 import QtGui, QtCore
+from PyQt5 import QtCore, QtGui, QtWidgets
 import pyqtgraph as pg
 from .TraceListWidget import TraceList
 from twisted.internet.defer import inlineCallbacks
@@ -8,7 +8,7 @@ import itertools
 import queue
 
 
-class imageWidget(QtGui.QWidget):
+class imageWidget(QtWidgets.QWidget):
 
     def __init__(self, config, reactor, parent=None, cxn=None):
         super(imageWidget, self).__init__(parent)
@@ -33,12 +33,12 @@ class imageWidget(QtGui.QWidget):
         plt.addItem(self.vLine, ignoreBounds=True)
         plt.addItem(self.hLine, ignoreBounds=True)
         self.plt.scene().sigMouseClicked.connect(self.mouse_clicked)
-        self.title = QtGui.QLabel(self.name)
-        self.next_button = QtGui.QPushButton('>')
-        self.prev_button = QtGui.QPushButton('<')
+        self.title = QtWidgets.QLabel(self.name)
+        self.next_button = QtWidgets.QPushButton('>')
+        self.prev_button = QtWidgets.QPushButton('<')
         self.next_button.clicked.connect(self.on_next)
         self.prev_button.clicked.connect(self.on_prev)
-        layout = QtGui.QGridLayout()
+        layout = QtWidgets.QGridLayout()
         layout.addWidget(self.title, 0,0)
         layout.addWidget(self.prev_button, 1,0)
         layout.addWidget(self.next_button, 1,1)
@@ -92,9 +92,9 @@ class imageWidget(QtGui.QWidget):
             self.hLine.setPos(mousePoint.y())
 
 if __name__ == '__main__':
-    app = QtGui.QApplication(sys.argv)
-    from . import qt4reactor
-    qt4reactor.install()
+    app = QtWidgets.QApplication(sys.argv)
+    import qt5reactor
+    qt5reactor.install()
     from twisted.internet import reactor
     main = imageWidget('example', reactor)
     main.show()

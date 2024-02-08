@@ -1,5 +1,5 @@
 import sys
-from PyQt4 import QtGui, QtCore
+from PyQt5 import QtCore, QtGui, QtWidgets
 import pyqtgraph as pg
 from .TraceListWidget import TraceList
 from twisted.internet.defer import inlineCallbacks, returnValue
@@ -19,7 +19,7 @@ class artistParameters():
                               # update count
 
                               
-class Hist_PyQtGraph(QtGui.QWidget):
+class Hist_PyQtGraph(QtWidgets.QWidget):
     def __init__(self, config, reactor, cxn=None, parent=None):
         super(Hist_PyQtGraph, self).__init__(parent)
         self.cxn = cxn
@@ -59,13 +59,13 @@ class Hist_PyQtGraph(QtGui.QWidget):
             init_value = yield self.get_init_vline()
             self.inf.setValue(init_value)
             self.inf.setPen(width=5.0)
-        self.coords = QtGui.QLabel('')
-        self.title = QtGui.QLabel(self.name)
-        frame = QtGui.QFrame()
-        splitter = QtGui.QSplitter()
+        self.coords = QtWidgets.QLabel('')
+        self.title = QtWidgets.QLabel(self.name)
+        frame = QtWidgets.QFrame()
+        splitter = QtWidgets.QSplitter()
         splitter.addWidget(self.tracelist)
-        hbox = QtGui.QHBoxLayout()
-        vbox = QtGui.QVBoxLayout()
+        hbox = QtWidgets.QHBoxLayout()
+        vbox = QtWidgets.QVBoxLayout()
         vbox.addWidget(self.title)
         vbox.addWidget(self.pw)
         vbox.addWidget(self.coords)
@@ -209,9 +209,9 @@ class Hist_PyQtGraph(QtGui.QWidget):
 
 
 if __name__ == '__main__':
-    app = QtGui.QApplication(sys.argv)
-    from . import qt4reactor
-    qt4reactor.install()
+    app = QtWidgets.QApplication(sys.argv)
+    import qt5reactor
+    qt5reactor.install()
     from twisted.internet import reactor
     main = Hist_PyQtGraph('example', reactor)
     main.show()
