@@ -3,12 +3,12 @@ Window for holding Graphs
 '''
 import sys
 from PyQt4 import QtGui
-import GUIConfig
-from GraphWidgetPyQtGraph import Graph_PyQtGraph as Graph
-from HistWidgetPyQtGraph import Hist_PyQtGraph as Hist
-from ScrollingGraphWidgetPyQtGraph import ScrollingGraph_PyQtGraph as ScrollingGraph
-from ImageWidget import imageWidget as ImageGraph
-from GridGraphWindow import GridGraphWindow
+from . import GUIConfig
+from .GraphWidgetPyQtGraph import Graph_PyQtGraph as Graph
+from .HistWidgetPyQtGraph import Hist_PyQtGraph as Hist
+from .ScrollingGraphWidgetPyQtGraph import ScrollingGraph_PyQtGraph as ScrollingGraph
+from .ImageWidget import imageWidget as ImageGraph
+from .GridGraphWindow import GridGraphWindow
 
 class GraphWindow(QtGui.QTabWidget):
     def __init__(self, reactor, cxn = None, parent=None):
@@ -63,7 +63,7 @@ class GraphWindow(QtGui.QTabWidget):
 
 if __name__ == '__main__':
     app = QtGui.QApplication(sys.argv)
-    import qt4reactor
+    from . import qt4reactor
     qt4reactor.install()
     from twisted.internet import reactor
     main = GraphWindow(reactor)

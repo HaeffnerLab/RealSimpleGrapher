@@ -1,10 +1,10 @@
 from PyQt4 import QtGui
 from PyQt4 import QtCore
-from ParameterListWidget import ParameterList
-from DataVaultListWidget import DataVaultList
-from FitWindowWidget import FitWindow
-from PredictSpectrumWidget import PredictSpectrum
-from GUIConfig import traceListConfig
+from .ParameterListWidget import ParameterList
+from .DataVaultListWidget import DataVaultList
+from .FitWindowWidget import FitWindow
+from .PredictSpectrumWidget import PredictSpectrum
+from .GUIConfig import traceListConfig
 
 class TraceList(QtGui.QListWidget):
     def __init__(self, parent):
@@ -98,7 +98,7 @@ class TraceList(QtGui.QListWidget):
 
             if action == togglecolorsAction:               
                 # option to change color of line
-                new_color = self.parent.colorChooser.next()
+                new_color = next(self.parent.colorChooser)
                 #self.parent.artists[ident].artist.setData(color = new_color, symbolBrush = new_color)
                 self.parent.artists[ident].artist.setPen(new_color)
                 if self.parent.show_points:
@@ -115,7 +115,7 @@ class TraceList(QtGui.QListWidget):
                 self.windows.append(fw)
                 fw.show()
 
-            if action in colorActionDict.keys():
+            if action in list(colorActionDict.keys()):
                 new_color = colorActionDict[action]
                 self.parent.artists[ident].artist.setPen(new_color)
                 if self.parent.show_points:

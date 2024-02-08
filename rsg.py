@@ -2,11 +2,11 @@
 The Real Simple Grapher
 '''
 
-from GraphWindow import GraphWindow
-from Dataset import Dataset
+from .GraphWindow import GraphWindow
+from .Dataset import Dataset
 from PyQt4 import QtGui
 a = QtGui.QApplication( [])
-import qt4reactor
+from . import qt4reactor
 qt4reactor.install()
 #import server libraries
 from twisted.internet.defer import returnValue, DeferredLock, Deferred, inlineCallbacks
