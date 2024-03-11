@@ -1,5 +1,5 @@
 import numpy as np
-from scipy.special.orthogonal import eval_genlaguerre as laguerre
+from scipy.special import eval_genlaguerre as laguerre
 
 class rabi_coupling(object):
 

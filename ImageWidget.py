@@ -1,7 +1,7 @@
 import sys
 from PyQt5 import QtCore, QtGui, QtWidgets
 import pyqtgraph as pg
-from .TraceListWidget import TraceList
+from TraceListWidget import TraceList
 from twisted.internet.defer import inlineCallbacks
 from twisted.internet.task import LoopingCall
 import itertools
@@ -67,7 +67,7 @@ class imageWidget(QtWidgets.QWidget):
                 pass
 
         except:
-            print('Could not access index: ' + str(self.image_index))
+            print(('Could not access index: ' + str(self.image_index)))
 
     def on_prev(self):
         try:
@@ -78,7 +78,7 @@ class imageWidget(QtWidgets.QWidget):
             else:
                 pass
         except:
-            print('Could not access index: ' + str(self.image_index))
+            print(('Could not access index: ' + str(self.image_index)))
 
     def mouse_clicked(self, event):
         '''

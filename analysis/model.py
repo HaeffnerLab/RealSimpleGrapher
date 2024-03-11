@@ -36,10 +36,10 @@ class Model():
         Evaluate model on full_params.
         '''
 
-        n = len(self.parameters.keys())
+        n = len(list(self.parameters.keys()))
         full_params = [None for k in range(n)]
         
-        for key in self.parameters.keys():
+        for key in list(self.parameters.keys()):
             if not self.parameters[key].vary:
                 index = self.parameters[key].index
                 value = self.parameters[key].manual_value
@@ -55,7 +55,7 @@ class Model():
         Indices of the parameters to vary in the fit
         '''
         varied = []
-        for param in self.parameters.keys():
+        for param in list(self.parameters.keys()):
             if self.parameters[param].vary:
                 varied.append(self.parameters[param].index)
         varied = sorted(varied)
@@ -66,7 +66,7 @@ class Model():
         Indicies of the parameters to hold fixed in the fit
         '''
         fixed = []
-        for param in self.parameters.keys():
+        for param in list(self.parameters.keys()):
             if not self.parameters[param].vary:
                 fixed.append(self.parameters[param].index)
         fixed = sorted(fixed)
@@ -77,7 +77,7 @@ class Model():
         Return a parameter from the index
         '''
 
-        for param in self.parameters.keys():
+        for param in list(self.parameters.keys()):
             if self.parameters[param].index == index:
                 return self.parameters[param]
 

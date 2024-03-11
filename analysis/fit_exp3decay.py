@@ -1,6 +1,6 @@
 # Fitter class for Gaussians
 
-from model import Model, ParameterInfo
+from .model import Model, ParameterInfo
 import numpy as np
 
 class Exponential3Decay(Model):

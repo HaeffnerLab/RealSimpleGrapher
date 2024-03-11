@@ -54,7 +54,7 @@ class Graph(QtWidgets.QWidget):
 
     def update_figure(self, _input = None):
         artists = []
-        for ident, (artist, dataset, index) in self.artists.items():
+        for ident, (artist, dataset, index) in list(self.artists.items()):
             x = dataset.data[:,0]
             y = dataset.data[:,index+1]
             artist.set_data((x,y))
@@ -82,7 +82,7 @@ class Graph(QtWidgets.QWidget):
         self.canvas.draw()
 
     def checkboxChanged(self, state):
-        for ident, item in self.tracelist.trace_dict.items():
+        for ident, item in list(self.tracelist.trace_dict.items()):
             if item.checkState():
                self.display(ident, True)
             else:

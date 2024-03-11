@@ -1,7 +1,7 @@
 # test for Rabi flop fits
 
-from model_test import ModelTest
-from fit_rabi import Rabi
+from .model_test import ModelTest
+from .fit_rabi import Rabi
 
 import numpy as np
 

@@ -3,9 +3,9 @@ Window containing a grid of graphs
 '''
 import sys
 from PyQt5 import QtGui, QtWidgets
-from .GraphWidgetPyQtGraph import Graph_PyQtGraph as Graph
-from .ScrollingGraphWidgetPyQtGraph import ScrollingGraph_PyQtGraph as ScrollingGraph
-from . import GUIConfig
+from GraphWidgetPyQtGraph import Graph_PyQtGraph as Graph
+from ScrollingGraphWidgetPyQtGraph import ScrollingGraph_PyQtGraph as ScrollingGraph
+import GUIConfig
 from twisted.internet.defer import Deferred, inlineCallbacks, returnValue
 from twisted.internet.task import LoopingCall
 from twisted.internet.threads import blockingCallFromThread

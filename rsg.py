@@ -2,8 +2,8 @@
 The Real Simple Grapher
 '''
 
-from .GraphWindow import GraphWindow
-from .Dataset import Dataset
+from GraphWindow import GraphWindow
+from Dataset import Dataset
 from PyQt5 import QtGui, QtWidgets
 a = QtWidgets.QApplication( [])
 import qt5reactor

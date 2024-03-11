@@ -1,10 +1,10 @@
 from PyQt5 import QtGui, QtWidgets
 from PyQt5 import QtCore, QtWidgets
-from .ParameterListWidget import ParameterList
-from .DataVaultListWidget import DataVaultList
-from .FitWindowWidget import FitWindow
-from .PredictSpectrumWidget import PredictSpectrum
-from .GUIConfig import traceListConfig
+from ParameterListWidget import ParameterList
+from DataVaultListWidget import DataVaultList
+from FitWindowWidget import FitWindow
+from PredictSpectrumWidget import PredictSpectrum
+from GUIConfig import traceListConfig
 
 class TraceList(QtWidgets.QListWidget):
     def __init__(self, parent):

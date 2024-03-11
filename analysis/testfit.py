@@ -12,4 +12,4 @@ def residual(p):
     return ydata - func(xdata, p)
 
 result = optimize.leastsq(residual, [2.5, 1.3, 0.5])
-print result[0]
+print(result[0])

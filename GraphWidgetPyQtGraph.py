@@ -1,11 +1,11 @@
 import sys
 from PyQt5 import QtCore, QtGui, QtWidgets
 import pyqtgraph as pg
-from .TraceListWidget import TraceList
+from TraceListWidget import TraceList
 from twisted.internet.defer import inlineCallbacks, returnValue
 from twisted.internet.task import LoopingCall
 import itertools
-from .Dataset import Dataset
+from Dataset import Dataset
 import queue
 
 import numpy as np
@@ -117,7 +117,7 @@ class Graph_PyQtGraph(QtWidgets.QWidget):
         return color_dict[color]
 
     def update_figure(self):
-        for ident, params in self.artists.items():
+        for ident, params in list(self.artists.items()):
             if params.shown:
                 try:
                     ds = params.dataset
@@ -174,7 +174,7 @@ class Graph_PyQtGraph(QtWidgets.QWidget):
             raise Exception('404 Artist not found')
 
     def checkboxChanged(self):
-        for ident, item in self.tracelist.trace_dict.items():
+        for ident, item in list(self.tracelist.trace_dict.items()):
             try:
                 if item.checkState() and not self.artists[ident].shown:
                     self.display(ident, True)
