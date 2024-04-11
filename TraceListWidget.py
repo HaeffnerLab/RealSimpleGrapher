@@ -99,13 +99,13 @@ class TraceList(QtWidgets.QListWidget):
             if action == togglecolorsAction:               
                 # option to change color of line
                 new_color = next(self.parent.colorChooser)
-                #self.parent.artists[ident].artist.setData(color = new_color, symbolBrush = new_color)
                 self.parent.artists[ident].artist.setPen(new_color)
                 if self.parent.show_points:
-                    self.parent.artists[ident].artist.setData(pen = new_color, symbolBrush = new_color)
+                    self.parent.artists[ident].artist.setPen(new_color)
+                    self.parent.artists[ident].artist.setSymbolBrush(new_color)
                     self.changeTraceListColor(ident, new_color)
                 else:
-                    self.parent.artists[ident].artist.setData(pen = new_color)
+                    self.parent.artists[ident].artist.setPen(new_color)
                     self.changeTraceListColor(ident, new_color)
 
             if action == fitAction:
@@ -119,8 +119,9 @@ class TraceList(QtWidgets.QListWidget):
                 new_color = colorActionDict[action]
                 self.parent.artists[ident].artist.setPen(new_color)
                 if self.parent.show_points:
-                    self.parent.artists[ident].artist.setData(pen = new_color, symbolBrush = new_color)
+                    self.parent.artists[ident].artist.setPen(new_color)
+                    self.parent.artists[ident].artist.setSymbolBrush(new_color)
                     self.changeTraceListColor(ident, new_color)
                 else:
-                    self.parent.artists[ident].artist.setData(pen = new_color)
+                    self.parent.artists[ident].artist.setPen(new_color)
                     self.changeTraceListColor(ident, new_color)
