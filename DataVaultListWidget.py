@@ -1,9 +1,9 @@
-from PyQt4 import QtGui
+from PyQt5 import QtGui, QtWidgets
 from twisted.internet.defer import inlineCallbacks
 import socket
 
 
-class DataVaultList(QtGui.QWidget):
+class DataVaultList(QtWidgets.QWidget):
 
     def __init__(self, tracename, parent=None):
         super(DataVaultList, self).__init__()
@@ -19,8 +19,8 @@ class DataVaultList(QtGui.QWidget):
         self.initializeGUI()
 
     def initializeGUI(self):
-        mainLayout = QtGui.QVBoxLayout()
-        self.dataListWidget = QtGui.QListWidget()
+        mainLayout = QtWidgets.QVBoxLayout()
+        self.dataListWidget = QtWidgets.QListWidget()
         self.dataListWidget.doubleClicked.connect(self.onDoubleclick)
         mainLayout.addWidget(self.dataListWidget)
         self.setWindowTitle('Data Vault')

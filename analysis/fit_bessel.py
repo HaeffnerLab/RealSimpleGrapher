@@ -1,6 +1,6 @@
 # Fitter class for Lorentzians
 
-from model import Model, ParameterInfo
+from .model import Model, ParameterInfo
 import numpy as np
 import scipy.special as sp
 

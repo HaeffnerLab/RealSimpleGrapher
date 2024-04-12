@@ -1,6 +1,6 @@
 # Fitter class for Lorentzians
 
-from model import Model, ParameterInfo
+from .model import Model, ParameterInfo
 import numpy as np
 
 class Lorentzian(Model):
@@ -31,7 +31,7 @@ class Lorentzian(Model):
         return x[max_index]
 
     def guess_scale(self, x, y):
-	area = (max(x) - min(x))*(max(y) - min(y))
+        area = (max(x) - min(x))*(max(y) - min(y))
         return area
     
     def guess_fwhm(self, x, y):

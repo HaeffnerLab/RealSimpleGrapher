@@ -2,20 +2,20 @@
 
 import numpy as np
 from scipy import optimize
-from fit_lorentzian import Lorentzian
-from fit_gaussian import Gaussian
-from fit_linear import Linear
-from fit_rabi import Rabi
-from fit_bessel import Bessel
-from fit_rotrabi import RotRabi
-from fit_rotramsey import RotRamsey
-from fit_sinusoid import Sinusoid
-from fit_sinusoid2 import Sinusoid2
-from fit_expdecay import ExponentialDecay
-from fit_exp3decay import Exponential3Decay
-from fit_gaussdecay import GaussianDecay
-from fit_ramsey import RamseyDecay
-from fit_ramseybfield import RamseyBfield
+from .fit_lorentzian import Lorentzian
+from .fit_gaussian import Gaussian
+from .fit_linear import Linear
+from .fit_rabi import Rabi
+from .fit_bessel import Bessel
+from .fit_rotrabi import RotRabi
+from .fit_rotramsey import RotRamsey
+from .fit_sinusoid import Sinusoid
+from .fit_sinusoid2 import Sinusoid2
+from .fit_expdecay import ExponentialDecay
+from .fit_exp3decay import Exponential3Decay
+from .fit_gaussdecay import GaussianDecay
+from .fit_ramsey import RamseyDecay
+from .fit_ramseybfield import RamseyBfield
 
 class FitWrapper():
 
@@ -50,7 +50,7 @@ class FitWrapper():
         Returns a list of params
         sorted in order of index
         '''
-        params = self.model.parameters.keys()
+        params = list(self.model.parameters.keys())
         return sorted(params, key=lambda p: self.model.parameters[p].index)
 
     def getVary(self, p):

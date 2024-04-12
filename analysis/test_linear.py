@@ -1,7 +1,7 @@
 # test for linear fits
 
-from model_test import ModelTest
-from fit_linear import Linear
+from .model_test import ModelTest
+from .fit_linear import Linear
 
 test = ModelTest(Linear, 'Linear')
 true_params = [0.3, 4]

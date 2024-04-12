@@ -23,4 +23,4 @@ if __name__ == '__main__':
     trap_frequency = T.Value(3.0, 'MHz')
     projection_angle = 45 #degrees
     eta = lamb_dicke.lamb_dicke(trap_frequency, projection_angle)
-    print 'eta {}'.format(eta)
+    print('eta {}'.format(eta))
