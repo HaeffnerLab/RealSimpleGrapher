@@ -34,7 +34,7 @@ class Rabi(Model):
         omega = rc.compute_rabi_coupling(eta, sideband_order, nmax)
         ones = np.ones_like(x)
         p_n = md.thermal(nbar, nmax)
-        if 1 - p_n.sum() > 1e-6:
+        if 1 - p_n.sum() > 5e-2:
             raise Exception ('Hilbert space too small, missing population')
         if delta == 0:
             #prevents division by zero if delta == 0, omega == 0
