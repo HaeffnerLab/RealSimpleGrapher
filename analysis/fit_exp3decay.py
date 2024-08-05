@@ -17,4 +17,4 @@ class Exponential3Decay(Model):
         startfrom = p[1]
         decayto = p[2]
 
-        return startfrom + (decayto-startfrom)*(1-np.exp(-x/tau)**3)
+        return startfrom + (decayto-startfrom)*(1-np.exp((-x/tau)**3))
