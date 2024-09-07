@@ -7,7 +7,7 @@ class ExponentialDecay(Model):
 
     def __init__(self):
         self.parameters = {
-            'tau':ParameterInfo('tau', 0, lambda x,y: 1000, vary=True),
+            'tau':ParameterInfo('tau', 0, lambda x,y: 1, vary=True),
             'startfrom': ParameterInfo('startfrom', 1, lambda x,y: 0, vary=True),
             'decayto': ParameterInfo('decayto', 2, lambda x,y: 0.5, vary=False),
             }
